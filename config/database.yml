@@ -12,10 +12,10 @@ development:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: mijikai_development
+  database: mijikai_dev
   pool: 5
-  username: root
-  password:
+  username: ruby_user
+  password: hiC$99Cup
   socket: /tmp/mysql.sock
 
 # Warning: The database defined as "test" will be erased and
@@ -27,8 +27,8 @@ test:
   reconnect: false
   database: mijikai_test
   pool: 5
-  username: root
-  password:
+  username: ruby_user
+  password: hiC$99Cup
   socket: /tmp/mysql.sock
 
 production:
@@ -37,6 +37,6 @@ production:
   reconnect: false
   database: mijikai_production
   pool: 5
-  username: root
-  password:
+  username: ruby_user
+  password: hiC$99Cup
   socket: /tmp/mysql.sock
