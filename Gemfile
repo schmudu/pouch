@@ -7,6 +7,8 @@ gem 'rails', '3.2.3'
 
 gem 'mysql2'
 gem 'devise'
+gem 'carrierwave'
+gem 'fog', '~> 1.3.1'
 
 group :production do
   gem 'pg'
