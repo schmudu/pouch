@@ -14,6 +14,7 @@ Mijikai::Application.routes.draw do
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
 
+  match 'pages/home' => 'pages#home' 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
