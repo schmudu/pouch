@@ -26,6 +26,26 @@ describe PagesController do
         get 'home'
         response.should have_selector('body', :content => ConstantsHelper::LINK_SIGN_IN)
     end
+
+    it "should have an terms link in the footer" do
+        get 'home'
+        response.should have_selector('ul', :content => 'Terms of Use')
+    end
+
+    it "should have an privacy link in the footer" do
+        get 'home'
+        response.should have_selector('ul', :content => 'Privacy')
+    end
+
+    it "should have an contact link in the footer" do
+        get 'home'
+        response.should have_selector('ul', :content => 'Contact')
+    end
+
+    it "should have an about link in the footer" do
+        get 'home'
+        response.should have_selector('ul', :content => 'About')
+    end
   end
 
   describe "GET 'about'" do
@@ -49,4 +69,10 @@ describe PagesController do
     end
   end
 
+  describe "GET 'contact'" do
+    it "returns http success" do
+      get 'contact'
+      response.should be_success
+    end
+  end
 end
