@@ -32,6 +32,7 @@ group :test, :development do
   gem "autotest-growl"
   gem "autotest-fsevent"
   gem "webrat"
+  gem "factory_girl_rails"
 end
 
 gem 'jquery-rails'

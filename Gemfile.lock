@@ -57,6 +57,11 @@ GEM
     excon (0.13.4)
     execjs (1.3.0)
       multi_json (~> 1.0)
+    factory_girl (3.2.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (3.2.0)
+      factory_girl (~> 3.2.0)
+      railties (>= 3.0.0)
     ffi (1.0.11)
     fog (1.3.1)
       builder
@@ -166,6 +171,7 @@ DEPENDENCIES
   carrierwave
   coffee-rails (~> 3.2.1)
   devise
+  factory_girl_rails
   fog (~> 1.3.1)
   jquery-rails
   mysql2
