@@ -1,0 +1,9 @@
+<ul>
+  <li>
+    <% if user_signed_in? %>
+      <%= link_to(ConstantsHelper::LINK_SIGN_OUT, destroy_user_session_path, :method => :delete) %>
+    <% else %>
+      <%= link_to(ConstantsHelper::LINK_SIGN_IN, new_user_session_path) %>
+    <% end %>
+  </li>
+</ul>
