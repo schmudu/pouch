@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120424024624) do
+ActiveRecord::Schema.define(:version => 20120425013339) do
 
   create_table "galleries", :force => true do |t|
     t.string   "name"
@@ -49,6 +49,10 @@ ActiveRecord::Schema.define(:version => 20120424024624) do
     t.datetime "updated_at",                                :null => false
     t.boolean  "admin",                  :default => false
     t.string   "screen_name"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "confirmation_token"
+    t.string   "unconfirmed_email"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
