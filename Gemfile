@@ -8,7 +8,7 @@ gem 'rails', '3.2.3'
 gem 'mysql2'
 gem 'devise'
 gem 'therubyracer'
-gem 'carrierwave'
+gem 'carrierwave', '0.6.1'
 gem 'fog', '~> 1.3.1'
 
 group :production do
