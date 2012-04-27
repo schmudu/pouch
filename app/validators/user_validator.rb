@@ -14,5 +14,9 @@ class UserValidator < ActiveModel::Validator
         record.errors[:password] << "Password must have at least one number."
       end
     end
+
+    #validate number of users created from this ip address - anti-bot
+    users = User.select{|u| ((record.created_ip == u.created_ip) && (u.created_at > (Time.now - ConstantsHelper::MAX_USERS_FROM_IP.minutes)))}
+    record.errors[:password] << "Too many users have been registered from this address." if users.length>=ConstantsHelper::MAX_USERS_FROM_IP
   end
 end

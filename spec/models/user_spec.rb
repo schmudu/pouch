@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe User do
+  describe "status" do
+    it "should respond to status" do
+      user = FactoryGirl.build(:user, :password => 'aaaAAA7', :password_confirmation => 'aaaAAA7')
+      user.status.should == 0
+    end
+  end
+
   describe "screen name" do
     it "should be valid with no changes" do 
       user = FactoryGirl.build(:user, :password => 'aaaAAA7', :password_confirmation => 'aaaAAA7')
@@ -25,6 +32,21 @@ describe User do
     it "should be valid with a password of lower and upper case letters and a number" do 
       user = FactoryGirl.build(:user, :password => 'aaaAAA6', :password_confirmation => 'aaaAAA6')
       user.should be_valid
+    end
+  end
+
+  describe "created_ip" do
+    it "should respond to created_ip" do
+      user = FactoryGirl.build(:user, :password => 'aaaAAA6', :password_confirmation => 'aaaAAA6')
+      user.should respond_to(:created_ip)
+    end
+
+    it "should not allow more than #{ConstantsHelper::MAX_USERS_FROM_IP} users to be created from one ip address under #{ConstantsHelper::MAX_USERS_MINUTES_WINDOW} minutes" do
+      ConstantsHelper::MAX_USERS_FROM_IP.times do |n|
+        user = FactoryGirl.create(:user, :email => "email#{n}@abc.com", :screen_name => "screen_name#{n}", :password => 'aaaAAA6', :password_confirmation => 'aaaAAA6')
+      end
+      user = FactoryGirl.build(:user, :email => "email@abc.com", :screen_name => "screen_name", :password => 'aaaAAA6', :password_confirmation => 'aaaAAA6')
+      user.should_not be_valid
     end
   end
 end
