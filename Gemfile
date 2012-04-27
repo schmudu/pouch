@@ -10,7 +10,6 @@ gem 'devise'
 gem 'therubyracer'
 gem 'carrierwave', '0.6.1'
 gem 'fog', '~> 1.3.1'
-gem 'tlsmail'
 gem 'certified'
 
 group :production do

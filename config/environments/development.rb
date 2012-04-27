@@ -37,7 +37,7 @@ Mijikai::Application.configure do
   config.assets.debug = true
 
   # Email
-  Net::SMTP.enable_tls(OpenSSL::SSL::VERIFY_NONE)
+  #Net::SMTP.enable_tls(OpenSSL::SSL::VERIFY_NONE)
 
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.perform_deliveries = true
