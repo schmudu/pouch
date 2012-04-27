@@ -33,7 +33,7 @@ group :test, :development do
   gem "autotest-rails"
   gem "autotest-growl"
   gem "autotest-fsevent"
-  gem "webrat"
+  gem "webrat", "0.7.1"
   gem "factory_girl_rails"
 end
 
