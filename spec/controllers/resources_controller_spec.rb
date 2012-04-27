@@ -52,8 +52,8 @@ describe ResourcesController do
 
   describe "GET new" do
     it "assigns a new resource as @resource" do
-      get :new, {}, valid_session
-      assigns(:resource).should be_a_new(Resource)
+      get :new
+      response.should redirect_to(new_user_session_path)
     end
   end
 

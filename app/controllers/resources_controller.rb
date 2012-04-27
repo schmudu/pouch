@@ -1,4 +1,6 @@
 class ResourcesController < ApplicationController
+  before_filter :authenticate_user!, :only => [:new]
+  
   # GET /resources
   # GET /resources.json
   def index
