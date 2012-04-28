@@ -1,6 +1,11 @@
 module ConstantsHelper
-  #Names
+  #Testing
+   TEST_USERS = { "plorenzo" => "myTwin", "rkelly" => "easternSho", "plee" => "shortGuy" }
+  
+  #Site Wide
   WEB_SITE_NAME = "LessonPouch"
+
+  #Login
   LINK_SIGN_IN = "Sign In"
   LINK_SIGN_OUT = "Sign Out"
 
