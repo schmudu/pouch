@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120427025241) do
+ActiveRecord::Schema.define(:version => 20120428025859) do
 
   create_table "galleries", :force => true do |t|
     t.string   "name"
@@ -55,6 +55,9 @@ ActiveRecord::Schema.define(:version => 20120427025241) do
     t.string   "unconfirmed_email"
     t.string   "created_ip"
     t.integer  "status",                 :default => 0
+    t.integer  "failed_attempts",        :default => 0
+    t.string   "unlock_token"
+    t.datetime "locked_at"
   end
 
   add_index "users", ["created_at"], :name => "index_users_on_created_at"

@@ -1,7 +1,7 @@
 require 'devise/test_helpers'
 require 'spec_helper'
 
-describe RegistrationsController do
+describe Users::RegistrationsController do
   render_views
 
   before(:each) do

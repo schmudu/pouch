@@ -1,4 +1,4 @@
-class RegistrationsController < Devise::RegistrationsController
+class Users::RegistrationsController < Devise::RegistrationsController
   def build_resource(hash=nil)
     #override devise method and save created_ip
     hash ||= params[resource_name] || {}
