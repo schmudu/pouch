@@ -19,6 +19,7 @@ require 'spec_helper'
 # that an instance is receiving a specific message.
 
 describe ResourcesController do
+  render_views
 
   # This should return the minimal set of attributes required to create a valid
   # Resource. As you add validations to Resource, be sure to
@@ -51,9 +52,15 @@ describe ResourcesController do
   end
 
   describe "GET new" do
-    it "assigns a new resource as @resource" do
+    it "should redirect to sign in page" do
       get :new
       response.should redirect_to(new_user_session_path)
+    end
+
+    it "after login should go to page" do
+      login_user
+      get :new
+      response.should have_selector('body', :content => 'New resource')
     end
   end
 

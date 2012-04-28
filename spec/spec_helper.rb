@@ -32,5 +32,5 @@ RSpec.configure do |config|
 
   #Devise
   config.include Devise::TestHelpers, :type => :controller
-  config.extend ControllerMacros, :type => :controller
+  config.include ControllerMacros, :type => :controller
 end
