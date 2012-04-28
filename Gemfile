@@ -11,6 +11,7 @@ gem 'therubyracer'
 gem 'carrierwave', '0.6.1'
 gem 'fog', '~> 1.3.1'
 gem 'certified'
+gem 'nested_form', :git => "git://github.com/ryanb/nested_form.git"
 
 group :production do
   gem 'pg'
