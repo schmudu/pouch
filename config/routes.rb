@@ -63,6 +63,7 @@ Mijikai::Application.routes.draw do
 
   #COMING SOON 
   match '*something', :to => redirect('/coming_soon.html')
+  root :to => redirect('/coming_soon.html')
 
   # See how all your routes lay out with "rake routes"
 
