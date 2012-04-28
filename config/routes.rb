@@ -1,4 +1,5 @@
 Mijikai::Application.routes.draw do
+=begin
   resources :resources
 
   devise_for :users, :controllers => { :registrations => "users/registrations" }
@@ -58,6 +59,10 @@ Mijikai::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   root :to => 'pages#home'
+=end
+
+  #COMING SOON 
+  match '*something', :to => redirect('/coming_soon.html')
 
   # See how all your routes lay out with "rake routes"
 
