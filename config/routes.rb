@@ -1,7 +1,7 @@
 Mijikai::Application.routes.draw do
   resources :resources
-
-  devise_for :users, :controllers => { :registrations => "users/registrations" }
+  devise_for :user, :path => '', :path_names => { :sign_in => "sign_in", :sign_out => "sign_out", :sign_up => "register" }, :controllers => { :registrations => "users/registrations" }
+  #devise_for :users, :controllers => { :registrations => "users/registrations" }
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
