@@ -7,6 +7,10 @@ class PagesController < ApplicationController
     @title = 'Home'
   end
 
+  def how_it_works
+    @title = 'How It Works'
+  end
+
   def about
     @title = 'About'
   end
