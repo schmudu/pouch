@@ -1,0 +1,8 @@
+#primary_menu ul{
+  list-style-type: none;
+}
+
+#primary_menu li{
+  /*display: inline;
+  padding-top: 10px;*/
+}

@@ -5,9 +5,12 @@ module ConstantsHelper
   #Site Wide
   WEB_SITE_NAME = "LessonPouch"
 
-  #Login
+  #Links
   LINK_SIGN_IN = "Sign In"
   LINK_SIGN_OUT = "Sign Out"
+  LINK_SHARE_RESOURCE_BUTTON = "Share Your Resource"
+  LINK_SHARE_RESOURCE_MAIN = "Share Resource"
+  LINK_BROWSE_RESOURCE_MAIN = "Browse Resources"
 
   #IP Gateway
   MAX_USERS_MINUTES_WINDOW = 10 
