@@ -3,7 +3,6 @@ require 'spec_helper'
 describe User do
   describe "status" do
     it "should respond to status" do
-      #user = FactoryGirl.build(:user, :password => 'aaaAAA7', :password_confirmation => 'aaaAAA7')
       user = FactoryGirl.build(:user)
       user.status.should == 0
     end
