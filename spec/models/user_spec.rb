@@ -3,14 +3,15 @@ require 'spec_helper'
 describe User do
   describe "status" do
     it "should respond to status" do
-      user = FactoryGirl.build(:user, :password => 'aaaAAA7', :password_confirmation => 'aaaAAA7')
+      #user = FactoryGirl.build(:user, :password => 'aaaAAA7', :password_confirmation => 'aaaAAA7')
+      user = FactoryGirl.build(:user)
       user.status.should == 0
     end
   end
 
   describe "screen name" do
     it "should be valid with no changes" do 
-      user = FactoryGirl.build(:user, :password => 'aaaAAA7', :password_confirmation => 'aaaAAA7')
+      user = FactoryGirl.build(:user)
       user.should be_valid
     end
 
@@ -33,11 +34,17 @@ describe User do
       user = FactoryGirl.build(:user, :password => 'aaaAAA6', :password_confirmation => 'aaaAAA6')
       user.should be_valid
     end
+
+    it "should not allow duplicate screen names" do
+      FactoryGirl.create(:user, :screen_name => 'some_name', :email => 'lksdjf@lkdfj.com')
+      user = FactoryGirl.build(:user, :screen_name => 'some_name', :email => 'kjkkjkf@lkdfj.com')
+      user.should_not be_valid
+    end
   end
 
   describe "created_ip" do
     it "should respond to created_ip" do
-      user = FactoryGirl.build(:user, :password => 'aaaAAA6', :password_confirmation => 'aaaAAA6')
+      user = FactoryGirl.build(:user)
       user.should respond_to(:created_ip)
     end
 

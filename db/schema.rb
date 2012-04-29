@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120429030907) do
+ActiveRecord::Schema.define(:version => 20120429031150) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(:version => 20120429030907) do
   add_index "users", ["created_ip"], :name => "index_users_on_created_ip"
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+  add_index "users", ["screen_name"], :name => "index_users_on_screen_name", :unique => true
   add_index "users", ["status"], :name => "index_users_on_status"
 
 end
