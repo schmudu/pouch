@@ -56,4 +56,18 @@ describe User do
       user.should_not be_valid
     end
   end
+
+  describe "resources" do
+    it "should respond to resources" do
+      user = FactoryGirl.create(:user)
+      user.should respond_to(:resources)
+    end
+
+    it "should respond to resources" do
+      user = FactoryGirl.create(:user)
+      lambda do
+        resource = FactoryGirl.create(:resource, :user_id => user.id)
+      end.should change(user.resources, :count).from(0).to(1)
+    end
+  end
 end

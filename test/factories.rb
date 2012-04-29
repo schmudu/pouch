@@ -7,4 +7,10 @@ FactoryGirl.define do
     screen_name "John"
     admin false
   end
+
+  factory :resource do
+    description         "some random description"
+    title               "worksheet of fractions"
+    #user_id needs to be provided
+  end
 end
