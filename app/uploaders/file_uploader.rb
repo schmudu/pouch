@@ -14,6 +14,8 @@ class FileUploader < CarrierWave::Uploader::Base
   # storage :file
   storage :fog
 
+  after :retrieve_from_store, :increase_download_counter
+
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
@@ -55,4 +57,9 @@ class FileUploader < CarrierWave::Uploader::Base
   #    "#{@name}.#{file.extension}"
    end
 
+  private
+
+  def increase_download_counter(file)
+    model.increment_download_counter
+  end
 end
