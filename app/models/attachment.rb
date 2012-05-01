@@ -1,11 +1,10 @@
 class Attachment < ActiveRecord::Base
-  attr_accessible :file, :description, :download_count
+  attr_accessible :file, :download_count
 
   belongs_to :attachable, :polymorphic => true
   
   mount_uploader :file, FileUploader
 
-  validates_presence_of :description
   #validates_presence_of :file
 
   def increment_download_counter

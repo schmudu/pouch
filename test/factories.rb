@@ -14,7 +14,6 @@ FactoryGirl.define do
   end
 
   factory :attachment do
-    description         "some random description"
     download_count      0
     file                File.open(File.join(Rails.root, '/public/robots.txt'))
   end

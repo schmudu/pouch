@@ -13,12 +13,4 @@ describe Attachment do
     end
 
   end
-
-  describe "description" do
-    it "should not be valid without a description" do 
-      attachment = FactoryGirl.build(:attachment)
-      attachment.description = nil
-      attachment.should_not be_valid
-    end
-  end
 end

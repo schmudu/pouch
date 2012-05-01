@@ -11,14 +11,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120429230737) do
+ActiveRecord::Schema.define(:version => 20120501234823) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
     t.integer  "attachable_id"
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
-    t.string   "description"
     t.string   "attachable_type"
     t.integer  "download_count",  :default => 0
   end
