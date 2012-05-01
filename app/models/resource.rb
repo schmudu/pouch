@@ -2,7 +2,7 @@ class Resource < ActiveRecord::Base
   attr_accessible :description, :title, :attachments_attributes, :user_id
 
   belongs_to :user
-  has_many :attachments, :as => :attachable
+  has_many :attachments, :as => :attachable, :dependent => :destroy
 
   accepts_nested_attributes_for :attachments
 

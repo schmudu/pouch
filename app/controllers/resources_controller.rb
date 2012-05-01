@@ -1,6 +1,11 @@
 class ResourcesController < ApplicationController
-  before_filter :authenticate_user!, :only => [:new]
+  before_filter :authenticate_user!, :only => [:new, :download]
   
+  def download
+     path = "uploads/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
+     send_file path, :x_sendfile=>true
+  end
+
   # GET /resources
   # GET /resources.json
   def index
@@ -43,12 +48,16 @@ class ResourcesController < ApplicationController
   # POST /resources.json
   def create
     @resource = Resource.new(params[:resource])
-logger.debug("\n\n====DEBUG: resource: #{@resource.title}\n\n")
+    @resource.user_id = current_user.id
+logger.debug("\n\n====DEBUG: resource: #{@resource.title}\n")
     respond_to do |format|
       if @resource.save
         format.html { redirect_to @resource, notice: 'Resource was successfully created.' }
         format.json { render json: @resource, status: :created, location: @resource }
       else
+        @resource.errors.each do |e|
+logger.debug("\n====DEBUG: resource: error: #{e.to_s}\n")
+        end
         format.html { render action: "new" }
         format.json { render json: @resource.errors, status: :unprocessable_entity }
       end

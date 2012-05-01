@@ -3,6 +3,9 @@ Mijikai::Application.routes.draw do
   devise_for :user, :path => '', :path_names => { :sign_in => "sign_in", :sign_out => "sign_out", :sign_up => "register" }, :controllers => { :registrations => "users/registrations" }
   #devise_for :users, :controllers => { :registrations => "users/registrations" }
 
+  # Allow download of file only to signed in users
+  match "/uploads/:id/:basename.:extension", :controller => "resources", :action => "download", :conditions => { :method => :get }, :as => 'resource_download'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
