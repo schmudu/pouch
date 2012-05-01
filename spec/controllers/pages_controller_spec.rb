@@ -9,10 +9,21 @@ describe PagesController do
       response.should be_success
     end
 
+    it "should have my account link if signed in" do
+        # user = double('user')
+        # request.env['warden'].stub :authenticate! => user
+        # controller.stub :current_user => user 
+        login_user
+        
+        get 'home'
+        response.should have_selector('body', :content => 'My Account')
+    end
+
     it "should have sign out link if signed in" do
-        user = double('user')
-        request.env['warden'].stub :authenticate! => user
-        controller.stub :current_user => user 
+        # user = double('user')
+        # request.env['warden'].stub :authenticate! => user
+        # controller.stub :current_user => user 
+        login_user
 
         get 'home'
         response.should have_selector('body', :content => ConstantsHelper::LINK_SIGN_OUT)

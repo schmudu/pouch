@@ -4,6 +4,7 @@
   <li><%= link_to(ConstantsHelper::LINK_SHARE_RESOURCE_MAIN, new_resource_path) %></li>
   <li><%= link_to(ConstantsHelper::LINK_BROWSE_RESOURCE_MAIN , resources_path) %></li>
   <% if user_signed_in? %>
+    <li><%= link_to(ConstantsHelper::LINK_MY_ACCOUNT, edit_user_registration_path) %></li>
     <li><%= link_to(ConstantsHelper::LINK_SIGN_OUT, destroy_user_session_path, :method => :delete) %></li>
   <% else %>
     <li><%= link_to(ConstantsHelper::LINK_SIGN_IN, new_user_session_path) %></li>
