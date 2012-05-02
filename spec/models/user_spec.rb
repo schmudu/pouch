@@ -63,6 +63,7 @@ describe User do
     end
 
     it "should respond to resources" do
+      Resource.any_instance.stub_chain(:attachments, :empty?).and_return(false)
       user = FactoryGirl.create(:user)
       lambda do
         resource = FactoryGirl.create(:resource, :user_id => user.id)

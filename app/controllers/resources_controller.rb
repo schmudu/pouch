@@ -49,7 +49,11 @@ class ResourcesController < ApplicationController
   def create
     @resource = Resource.new(params[:resource])
     @resource.user_id = current_user.id
-logger.debug("\n\n====DEBUG: resource: #{@resource.title}\n")
+
+    #validate attachment length
+    #@resource.errors[:attachments] << "Resource must have at least one attachment." if @resource.attachments.empty?
+    logger.debug("=======EMPTY?: #{@resource.attachments.length}")
+
     respond_to do |format|
       if @resource.save
         format.html { redirect_to @resource, notice: 'Resource was successfully created.' }
