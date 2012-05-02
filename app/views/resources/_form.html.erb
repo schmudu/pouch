@@ -9,10 +9,6 @@
   </p>
   <%= f.fields_for :attachments do |attachment_form|  %>
     <p>
-    <%= attachment_form.label :description %><br />
-    <%= attachment_form.text_area :description %>
-    </p>
-    <p>
     <%= attachment_form.label :file %><br />
     <%= attachment_form.file_field :file %>
     </p>
