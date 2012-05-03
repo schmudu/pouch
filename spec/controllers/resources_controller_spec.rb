@@ -21,6 +21,26 @@ require 'spec_helper'
 describe ResourcesController do
   render_views
   
+  describe "GET download" do
+    it "should redirect to sign in page if user not signed in" do
+      Object.any_instance.stub(:send_path).and_return(true)
+      get :download
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it "should be success if user is signed in" do
+      login_user
+      get :download
+      response.should be_sucess
+    end
+
+  it "should increment user download count after success" do
+      login_user
+      get :download
+      response.should be_sucess
+    end
+  end
+
   describe "GET new" do
     it "should redirect to sign in page" do
       get :new

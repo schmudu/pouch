@@ -21,7 +21,6 @@ Mijikai::Application.routes.draw do
   match 'help' => 'pages#help'
   match 'privacy' => 'pages#privacy'
   match 'terms' => 'pages#terms'
-  match 'how_it_works' => 'pages#how_it_works'
   
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products

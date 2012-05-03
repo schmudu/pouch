@@ -2,6 +2,7 @@ class ResourcesController < ApplicationController
   before_filter :authenticate_user!, :only => [:new, :download]
   
   def download
+     current_user.update_attribute(:downloads, current_user.downloads + 1)
      path = "uploads/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
      send_file path, :x_sendfile=>true
   end
@@ -50,17 +51,15 @@ class ResourcesController < ApplicationController
     @resource = Resource.new(params[:resource])
     @resource.user_id = current_user.id
 
-    #validate attachment length
-    #@resource.errors[:attachments] << "Resource must have at least one attachment." if @resource.attachments.empty?
-    logger.debug("=======EMPTY?: #{@resource.attachments.length}")
-
+    unless params[:resource][:attachments_attributes][0].nil?
+      logger.debug("\n\nparams: #{params[:resource][:attachments_attributes][0][:file_cache]}")
+    end
     respond_to do |format|
       if @resource.save
         format.html { redirect_to @resource, notice: 'Resource was successfully created.' }
         format.json { render json: @resource, status: :created, location: @resource }
       else
         @resource.errors.each do |e|
-logger.debug("\n====DEBUG: resource: error: #{e.to_s}\n")
         end
         format.html { render action: "new" }
         format.json { render json: @resource.errors, status: :unprocessable_entity }

@@ -1,5 +1,6 @@
 class Attachment < ActiveRecord::Base
-  attr_accessible :file, :download_count
+  attr_accessible :file, :download_count, :file_cache
+  #attr_accessor :file_cache
 
   belongs_to :attachable, :polymorphic => true
   

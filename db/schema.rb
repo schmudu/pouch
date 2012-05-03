@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120501234823) do
+ActiveRecord::Schema.define(:version => 20120503014501) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20120501234823) do
     t.integer  "failed_attempts",        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.integer  "downloads",              :default => 0
   end
 
   add_index "users", ["created_at"], :name => "index_users_on_created_at"

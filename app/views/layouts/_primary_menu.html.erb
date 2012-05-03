@@ -1,6 +1,5 @@
 <ul id="primary_menu">
   <li><%= link_to("Home", root_path) %></li>
-  <li><%= link_to(ConstantsHelper::LINK_HOW_IT_WORKS, how_it_works_path) %></li>
   <li><%= link_to(ConstantsHelper::LINK_SHARE_RESOURCE_MAIN, new_resource_path) %></li>
   <li><%= link_to(ConstantsHelper::LINK_BROWSE_RESOURCE_MAIN , resources_path) %></li>
   <% if user_signed_in? %>
