@@ -1,6 +1,7 @@
 module ConstantsHelper
   #Testing
    TEST_USERS = { "plorenzo" => "myTwin", "rkelly" => "easternSho", "plee" => "shortGuy" }
+   TEST_FILE_PATH = File.join(Rails.root, '/test/downloads/hello.txt')
   
   #Site Wide
   WEB_SITE_NAME = "LessonPouch"

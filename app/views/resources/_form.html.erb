@@ -7,9 +7,10 @@
   <%= f.label :description %><br />
   <%= f.text_area :description %>
   </p>
-  <%= f.fields_for :attachments, @attachment do |attachment_form|  %>
+  <%= f.fields_for :attachments do |attachment_form|  %>
     <p>
     <%= attachment_form.label :file %><br />
+    <%= image_tag(File.join('/uploads/',attachment_form.object.file_identifier)) if attachment_form.object.file_identifier.nil?%>
     <%= attachment_form.file_field :file %>
     <%= attachment_form.hidden_field :file_cache %>
     </p>

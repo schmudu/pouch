@@ -16,8 +16,9 @@ class FileUploader < CarrierWave::Uploader::Base
 
   after :retrieve_from_store, :increase_download_counter
 
+  # commented out these lines for testing
   before :store, :remember_cache_id
-  after :store, :delete_tmp_dir
+  #after :store, :delete_tmp_dir
 
   # store! nil's the cache_id after it finishes so we need to remember it for deletion
   def remember_cache_id(new_file)

@@ -1,3 +1,6 @@
+include ActionDispatch::TestProcess
+include ConstantsHelper
+
 FactoryGirl.define do
   factory :user do
     email                  "user@example.com"
@@ -15,6 +18,9 @@ FactoryGirl.define do
 
   factory :attachment do
     download_count      0
-    file                File.open(File.join(Rails.root, '/public/robots.txt'))
+    #file                File.open(File.join(Rails.root, '/public/robots.txt'))
+    #file                fixture_file_upload((File.join(Rails.root, '/public/robots.txt')), 'txt')
+    #file                Rack::Test::UploadedFile.new((File.join(Rails.root, '/public/robots.txt')), 'txt')
+    file                Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt')
   end
 end
