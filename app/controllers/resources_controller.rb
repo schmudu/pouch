@@ -30,6 +30,16 @@ class ResourcesController < ApplicationController
   def show
     @resource = Resource.find(params[:id])
 
+    #update view count
+    @resource.update_attribute(:views, @resource.views + 1)
+
+    #update user resource view count
+    if user_signed_in?
+      UserResourceView.create(:user_id => current_user.id, :resource_id => @resource.id) 
+    else
+      UserResourceView.create(:user_id => nil, :resource_id => @resource.id)
+    end
+
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @resource }

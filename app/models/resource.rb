@@ -1,8 +1,9 @@
 class Resource < ActiveRecord::Base
-  attr_accessible :description, :title, :attachments_attributes, :user_id
+  attr_accessible :description, :title, :attachments_attributes, :user_id, :views
 
   belongs_to :user
   has_many :attachments, :as => :attachable, :dependent => :destroy
+  has_many :user_resource_views
 
   accepts_nested_attributes_for :attachments
 

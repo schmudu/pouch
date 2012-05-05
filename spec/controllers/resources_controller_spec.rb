@@ -94,13 +94,73 @@ describe ResourcesController do
       attachment = Attachment.find_by_id(@resource.attachments.first.id)
       attachment.user_attachment_downloads.length.should == 1
     end
+
 =begin
     it "should increment user download count after success" do
       login_user
       get :download
-      response.should be_sucess
+      response.should be_success
     end
 =end
+  end
+
+  describe "GET show" do
+    before(:each) do
+      @user = FactoryGirl.create(:user)
+      @user.confirm!
+      @resource = FactoryGirl.create(:resource, :user_id => @user.id)
+    end
+
+    it "assigns the requested resource as @resource" do
+      get :show, {:id => @resource.id}
+      response.should be_success
+    end
+
+    it "should increment user_resource view count after success for user and resource" do
+      sign_in @user
+
+      #before
+      user = User.find_by_email(@user.email)
+      user.user_resource_views.length.should == 0
+      resource = Resource.find_by_id(@resource.id)
+      resource.user_resource_views.length.should == 0
+
+      get :show, {:id => @resource.id}
+
+      #after
+      user = User.find_by_email(@user.email)
+      user.user_resource_views.length.should == 1
+      resource = Resource.find_by_id(@resource.id)
+      resource.user_resource_views.length.should == 1
+    end
+
+    it "should increment user_resource view count after success for nil and resource even if no one is signed in" do
+      #before
+      resource = Resource.find_by_id(@resource.id)
+      resource.user_resource_views.length.should == 0
+
+      get :show, {:id => @resource.id}
+
+      #after
+      resource = Resource.find_by_id(@resource.id)
+      resource.user_resource_views.length.should == 1
+
+      user_resource_view = UserResourceView.first
+      user_resource_view.user_id.should be_nil
+    end
+
+    it "should increment view count" do
+      #before
+      resource = Resource.find_by_id(@resource.id)
+      resource.views.should == 0
+
+      get :show, {:id => @resource.id}
+      get :show, {:id => @resource.id}
+
+      #after
+      resource = Resource.find_by_id(@resource.id)
+      resource.views.should == 2
+    end
   end
 
   describe "GET new" do

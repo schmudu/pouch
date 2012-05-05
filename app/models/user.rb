@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
 
   has_many :resources
   has_many :user_attachment_downloads
+  has_many :user_resource_views
   
   validates_uniqueness_of :email
   validates_uniqueness_of :screen_name

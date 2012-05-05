@@ -56,4 +56,11 @@ describe Resource do
       resource.attachments.length.should == 2
     end
   end
+
+  describe "views" do
+    it "should respond" do 
+      resource = FactoryGirl.build(:resource, :user_id => @user.id)
+      resource.should respond_to(:views)
+    end
+  end
 end

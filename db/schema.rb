@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120505061657) do
+ActiveRecord::Schema.define(:version => 20120505064258) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -26,13 +26,15 @@ ActiveRecord::Schema.define(:version => 20120505061657) do
 
   create_table "resources", :force => true do |t|
     t.string   "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
     t.string   "title"
     t.integer  "user_id"
+    t.integer  "views",       :default => 0
   end
 
   add_index "resources", ["user_id"], :name => "index_resources_on_user_id"
+  add_index "resources", ["views"], :name => "index_resources_on_views"
 
   create_table "user_attachment_downloads", :force => true do |t|
     t.integer  "user_id"
@@ -43,6 +45,16 @@ ActiveRecord::Schema.define(:version => 20120505061657) do
 
   add_index "user_attachment_downloads", ["attachment_id"], :name => "index_user_attachment_downloads_on_attachment_id"
   add_index "user_attachment_downloads", ["user_id"], :name => "index_user_attachment_downloads_on_user_id"
+
+  create_table "user_resource_views", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "resource_id", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "user_resource_views", ["resource_id"], :name => "index_user_resource_views_on_resource_id"
+  add_index "user_resource_views", ["user_id"], :name => "index_user_resource_views_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "",    :null => false
