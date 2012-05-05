@@ -88,6 +88,14 @@ class FileUploader < CarrierWave::Uploader::Base
   private
 
   def increase_download_counter(file)
-    model.increment_download_counter
+    #puts("==UPLOADER: error: #{model.errors.full_messages.class}\n")
+    # unless model.errors.full_messages.empty?
+    #   model.errors.full_messages.each do |key, error|
+    #      puts("==UPLOADER: key: #{key} error: #{error}\n")
+    #   end
+    # else
+    #      puts("==UPLOADER: no errors!")
+    # end
+    #model.increment_download_counter
   end
 end

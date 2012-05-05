@@ -7,8 +7,8 @@ class Attachment < ActiveRecord::Base
   
   mount_uploader :file, FileUploader
 
-  validates_with AttachmentValidator
-  def increment_download_counter
-    self.update_attribute(:downloads, downloads + 1)
-  end
+  #validates_with AttachmentValidator
+  # def increment_download_counter
+  #   self.update_attribute(:downloads, downloads + 1)
+  # end
 end

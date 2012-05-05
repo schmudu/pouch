@@ -19,6 +19,11 @@ module ResourcesHelper
     #find basename
     base_name = post_match[(folder_index+1)..(extension_index-1)]
     results[:base_name] = base_name
+
+    #find identifier
+    identifier = post_match[(folder_index+1)..post_match.length]
+    results[:identifier] = identifier
+
     results
   end
 

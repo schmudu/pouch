@@ -10,10 +10,11 @@ class ResourcesController < ApplicationController
     #update user count
     current_user.update_attribute(:downloads, current_user.downloads + 1)
 
-    #note: attachment count is updated via the file_uploader.rb
+    #update attachment download
+    attachment = Attachment.find_by_id(params[:id])
+    attachment.update_attribute(:downloads, attachment.downloads + 1)
 
     #create new user_attachment_download
-    attachment = Attachment.find_by_id(params[:id])
     UserAttachmentDownload.create(:user_id => current_user.id, :attachment_id => attachment.id)
     path = "uploads/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
     send_file path, :x_sendfile=>true
@@ -90,6 +91,7 @@ class ResourcesController < ApplicationController
   # PUT /resources/1
   # PUT /resources/1.json
   def update
+    logger.debug("\n\n\n==DEBUG: update called!\n")
     @resource = Resource.find(params[:id])
 
     respond_to do |format|
@@ -97,6 +99,11 @@ class ResourcesController < ApplicationController
         format.html { redirect_to @resource, notice: 'Resource was successfully updated.' }
         format.json { head :no_content }
       else
+        @resource.errors.each do |key, error|
+          logger.debug("==DEBUG KEY: #{key} ERROR: #{error}\n")
+        end
+
+        #format.html { render :text => "tried to update attributes but failed."}
         format.html { render action: "edit" }
         format.json { render json: @resource.errors, status: :unprocessable_entity }
       end
