@@ -1,6 +1,11 @@
 class ResourcesController < ApplicationController
+  helper :resources
   before_filter :authenticate_user!, :only => [:new, :download]
-  
+  def download_cached_attachment 
+    path = "tmp/cache/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
+    send_file path, :x_sendfile=>true
+  end
+
   def download
     #update user count
     current_user.update_attribute(:downloads, current_user.downloads + 1)
@@ -51,6 +56,7 @@ class ResourcesController < ApplicationController
   def new
     @resource = Resource.new
 
+
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @resource }
@@ -68,9 +74,6 @@ class ResourcesController < ApplicationController
     @resource = Resource.new(params[:resource])
     @resource.user_id = current_user.id
 
-    unless params[:resource][:attachments_attributes][0].nil?
-      logger.debug("\n\nparams: #{params[:resource][:attachments_attributes][0][:file_cache]}")
-    end
     respond_to do |format|
       if @resource.save
         format.html { redirect_to @resource, notice: 'Resource was successfully created.' }

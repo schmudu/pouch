@@ -9,9 +9,19 @@
   </p>
   <%= f.fields_for :attachments do |attachment_form|  %>
     <p>
-    <%= attachment_form.label :file %><br />
-    <% #image_tag(File.join('/uploads/',attachment_form.object.file_identifier)) if attachment_form.object.file_identifier.nil?%>
-    <%= attachment_form.file_field :file %>
+    <%= attachment_form.label :file %>
+    <% if !attachment_form.object.file.path.blank? %>
+      <% file_info = get_cache_file_info attachment_form.object.file.path %>
+      <% #puts "folder:#{file_info[:folder]}" %>
+      <% #puts "folder:#{attachment_form.object.file.path.blank?}" %>
+      <% #image_tag(File.join('/tmp/cache/', file_info[:folder]))%>
+      <% #attachment_form.file_field :file, :value => "#{File.join('/tmp/cache/', file_info[:folder], '/',attachment_form.object.file.identifier)}" %>
+      <%= link_to attachment_form.object.file.identifier, "#{File.join('/tmp/cache/', file_info[:folder], '/',attachment_form.object.file.identifier)}" %>
+    <% else %>
+      <%= attachment_form.file_field :file %>
+    <% end %>
+    <% #attachment_form.file_field :file %>
+    <% #attachment_form.file_field :file %>
     <%= attachment_form.hidden_field :file_cache %>
     </p>
     <%= attachment_form.link_to_remove "Remove this attachment" %>

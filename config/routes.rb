@@ -5,6 +5,7 @@ Mijikai::Application.routes.draw do
 
   # Allow download of file only to signed in users
   match "/uploads/:id/:basename.:extension", :controller => "resources", :action => "download", :conditions => { :method => :get }, :as => 'resource_download'
+  match "/tmp/cache/:id/:basename.:extension", :controller => "resources", :action => "download_cached_attachment", :conditions => { :method => :get }
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
