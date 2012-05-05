@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120503014501) do
+ActiveRecord::Schema.define(:version => 20120505061657) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(:version => 20120503014501) do
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
     t.string   "attachable_type"
-    t.integer  "download_count",  :default => 0
+    t.integer  "downloads",       :default => 0
   end
 
   add_index "attachments", ["attachable_id"], :name => "index_attachments_on_attachable_id"
@@ -33,6 +33,16 @@ ActiveRecord::Schema.define(:version => 20120503014501) do
   end
 
   add_index "resources", ["user_id"], :name => "index_resources_on_user_id"
+
+  create_table "user_attachment_downloads", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "attachment_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "user_attachment_downloads", ["attachment_id"], :name => "index_user_attachment_downloads_on_attachment_id"
+  add_index "user_attachment_downloads", ["user_id"], :name => "index_user_attachment_downloads_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "",    :null => false

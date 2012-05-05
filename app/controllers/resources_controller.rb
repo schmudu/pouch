@@ -2,9 +2,16 @@ class ResourcesController < ApplicationController
   before_filter :authenticate_user!, :only => [:new, :download]
   
   def download
-     current_user.update_attribute(:downloads, current_user.downloads + 1)
-     path = "uploads/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
-     send_file path, :x_sendfile=>true
+    #update user count
+    current_user.update_attribute(:downloads, current_user.downloads + 1)
+
+    #note: attachment count is updated via the file_uploader.rb
+
+    #create new user_attachment_download
+    attachment = Attachment.find_by_id(params[:id])
+    UserAttachmentDownload.create(:user_id => current_user.id, :attachment_id => attachment.id)
+    path = "uploads/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
+    send_file path, :x_sendfile=>true
   end
 
   # GET /resources

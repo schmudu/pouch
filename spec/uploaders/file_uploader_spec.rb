@@ -20,6 +20,6 @@ describe FileUploader do
   it "should increment download count by 1" do 
     lambda do
       @uploader.retrieve_from_store!(@uploader.file.identifier)
-    end.should change(@attachment, :download_count).from(0).to(1)
+    end.should change(@attachment, :downloads).from(0).to(1)
   end
 end

@@ -22,10 +22,17 @@ describe Attachment do
     end
   end
 
-  describe "download count" do
-    it "should response to download count" do 
+  describe "downloads" do
+    it "should response to downloads" do 
       attachment = FactoryGirl.build(:attachment)
-      attachment.should respond_to(:download_count)
+      attachment.should respond_to(:downloads)
+    end
+  end
+
+  describe "user_attachment_downloads" do
+    it "should response to user_attachment_downloads" do 
+      attachment = FactoryGirl.build(:attachment)
+      attachment.should respond_to(:user_attachment_downloads)
     end
   end
 end

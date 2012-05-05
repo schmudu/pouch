@@ -19,22 +19,83 @@ require 'spec_helper'
 # that an instance is receiving a specific message.
 
 describe ResourcesController do
+  include ResourcesHelper
   render_views
   
   describe "GET download" do
-    it "should redirect to sign in page if user not signed in" do
-      Object.any_instance.stub(:send_path).and_return(true)
-      get :download
-      response.should redirect_to(new_user_session_path)
-    end
-=begin
-    it "should be success if user is signed in" do
-      login_user
-      get :download
-      response.should be_sucess
+    before(:each) do
+      @user = FactoryGirl.create(:user)
+      @user.confirm!
+      @resource = FactoryGirl.create(:resource, :user_id => @user.id)
     end
 
-  it "should increment user download count after success" do
+    it "should redirect to sign in page if user not signed in" do
+      attachment = @resource.attachments.first
+      file_info = get_file_info attachment.file.path
+      get :download, {:id => file_info[:folder], :basename => file_info[:base_name], :extension => file_info[:extension]}
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it "should be success if user is signed in" do
+      sign_in @user
+
+      attachment = @resource.attachments.first
+      file_info = get_file_info attachment.file.path
+      get :download, {:id => file_info[:folder], :basename => file_info[:base_name], :extension => file_info[:extension]}
+      response.should be_success
+    end
+
+    it "should increment user download count after success" do
+      sign_in @user
+
+      #before
+      user = User.find_by_email(@user.email)
+      user.downloads.should == 0
+
+      attachment = @resource.attachments.first
+      file_info = get_file_info attachment.file.path
+      get :download, {:id => file_info[:folder], :basename => file_info[:base_name], :extension => file_info[:extension]}
+
+      #after
+      user = User.find_by_email(@user.email)
+      user.downloads.should == 1
+    end
+
+    it "should increment attachment download count after success" do
+      sign_in @user
+
+      #before
+      attachment = Attachment.find_by_id(@resource.attachments.first.id)
+      attachment.downloads.should == 0
+
+      file_info = get_file_info attachment.file.path
+      get :download, {:id => file_info[:folder], :basename => file_info[:base_name], :extension => file_info[:extension]}
+
+      #after
+      attachment = Attachment.find_by_id(@resource.attachments.first.id)
+      attachment.downloads.should == 1
+    end
+
+    it "should increment attachment download count after success for user and attachment" do
+      sign_in @user
+
+      #before
+      user = User.find_by_email(@user.email)
+      user.user_attachment_downloads.length.should == 0
+      attachment = Attachment.find_by_id(@resource.attachments.first.id)
+      attachment.user_attachment_downloads.length.should == 0
+
+      file_info = get_file_info attachment.file.path
+      get :download, {:id => file_info[:folder], :basename => file_info[:base_name], :extension => file_info[:extension]}
+
+      #after
+      user = User.find_by_email(@user.email)
+      user.user_attachment_downloads.length.should == 1
+      attachment = Attachment.find_by_id(@resource.attachments.first.id)
+      attachment.user_attachment_downloads.length.should == 1
+    end
+=begin
+    it "should increment user download count after success" do
       login_user
       get :download
       response.should be_sucess

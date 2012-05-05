@@ -10,7 +10,7 @@
   <%= f.fields_for :attachments do |attachment_form|  %>
     <p>
     <%= attachment_form.label :file %><br />
-    <%= image_tag(File.join('/uploads/',attachment_form.object.file_identifier)) if attachment_form.object.file_identifier.nil?%>
+    <% #image_tag(File.join('/uploads/',attachment_form.object.file_identifier)) if attachment_form.object.file_identifier.nil?%>
     <%= attachment_form.file_field :file %>
     <%= attachment_form.hidden_field :file_cache %>
     </p>

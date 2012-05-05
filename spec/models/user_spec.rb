@@ -56,6 +56,13 @@ describe User do
     end
   end
 
+  describe "user_attachment_downloads" do
+    it "should response to user_attachment_downloads" do 
+      user = FactoryGirl.create(:user)
+      user.should respond_to(:user_attachment_downloads)
+    end
+  end
+
   describe "resources" do
     it "should respond to resources" do
       user = FactoryGirl.create(:user)

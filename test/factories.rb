@@ -11,7 +11,7 @@ FactoryGirl.define do
   end
 
   factory :attachment do
-    download_count      0
+    downloads           0
     #file                File.open(File.join(Rails.root, '/public/robots.txt'))
     #file                fixture_file_upload((File.join(Rails.root, '/public/robots.txt')), 'txt')
     #file                Rack::Test::UploadedFile.new((File.join(Rails.root, '/public/robots.txt')), 'txt')

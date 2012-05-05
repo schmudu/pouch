@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   # attr_accessible :title, :body
 
   has_many :resources
+  has_many :user_attachment_downloads
   
   validates_uniqueness_of :email
   validates_uniqueness_of :screen_name
