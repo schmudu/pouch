@@ -1,0 +1,14 @@
+"new_1336315352519"=>{"file_cache"=>"", "_destroy"=>"1"}}}    #empty file added/removed(0)
+
+"0"=>{"file_cache"=>"", "_destroy"=>"1", "id"=>"43"}          #file previously uploaded, removed(-1) -done
+
+"new_1336320133812"=>{"file"=>#<ActionDispatch::Http::UploadedFile:0x00000100c3b238 @original_filename="sample.txt", @content_type="text/plain", @headers="Content-Disposition: form-data; name=\"resource[attachments_attributes][new_1336320133812][file]\"; filename=\"sample.txt\"\r\nContent-Type: text/plain\r\n", @tempfile=#<File:/var/folders/8c/8czqgeVsH+S0GvRVVHiP-E+++TI/-Tmp-/RackMultipart20120506-1285-1oo0ea5>>, "file_cache"=>"", "_destroy"=>"1"}}}                            
+                                                              #file uploaded, removed(0) - done
+
+
+
+"new_1336315433644"=>{"file"=>#<ActionDispatch::Http::UploadedFile:0x00000129dc6ae8 @original_filename="sample.txt", @content_type="text/plain", @headers="Content-Disposition: form-data; name=\"resource[attachments_attributes][new_1336315433644][file]\"; filename=\"sample.txt\"\r\nContent-Type: text/plain\r\n", @tempfile=#<File:/var/folders/8c/8czqgeVsH+S0GvRVVHiP-E+++TI/-Tmp-/RackMultipart20120506-1285-1rrj7rj>>, "file_cache"=>"", "_destroy"=>"false"                                                       #file uploaded(1) - done
+
+"0"=>{"file_cache"=>"", "_destroy"=>"false", "id"=>"43"}      #file untouched, previously loaded(1) - done
+
+"new_1336324323661"=>{"file_cache"=>"", "_destroy"=>"false"   #empty file added(0) - done

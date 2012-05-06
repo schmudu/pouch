@@ -24,8 +24,8 @@
     <% #attachment_form.file_field :file %>
     <% #attachment_form.file_field :file %>
     <%= attachment_form.hidden_field :file_cache %>
-    </p>
     <%= attachment_form.link_to_remove "Remove this attachment", :remote => true %>
+    </p>
     <% #attachment_form.check_box :_destroy %>
   <% end %>
   <%= f.link_to_add "Add attachment", :attachments %>

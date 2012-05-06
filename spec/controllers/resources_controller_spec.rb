@@ -189,15 +189,15 @@ describe ResourcesController do
       #}
     end
 
-    def attributes_empty_file
+    def empty_file
      {} 
     end
 
-    def attributes_removed_file
+    def removed_file
      {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"1"} 
     end
 
-    def attributes_uploaded_file
+    def uploaded_file
      {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"false"} 
     end
 
@@ -211,7 +211,7 @@ describe ResourcesController do
       end
 
       it "should redirect to sign in page" do
-        post :create, {:resource => valid_attributes(:one => attributes_uploaded_file)}, valid_session
+        post :create, {:resource => valid_attributes(:one => uploaded_file)}, valid_session
         response.should redirect_to(new_user_session_path)
       end
     end
@@ -219,7 +219,7 @@ describe ResourcesController do
     describe "with valid params" do
       it "creates a new Resource" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => attributes_uploaded_file})}
+          post :create, {:resource => valid_attributes({:one => uploaded_file})}
           resource = Resource.last
           response.should redirect_to(resource_path(:id => resource.id))
         end.should change(Resource, :count).by(1)
@@ -227,7 +227,7 @@ describe ResourcesController do
 
       it "creates a new Resource with three attachments" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => attributes_uploaded_file, :two => attributes_uploaded_file, :three => attributes_uploaded_file})}
+          post :create, {:resource => valid_attributes({:one => uploaded_file, :two => uploaded_file, :three => uploaded_file})}
         end.should change(Resource, :count).by(1)
         resource = Resource.last
         resource.attachments.count.should == 3
@@ -235,7 +235,7 @@ describe ResourcesController do
 
       it "creates a new Resource with two attachment, one removed, and one empty" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => attributes_empty_file, :two => attributes_removed_file, :three => attributes_uploaded_file, :four => attributes_uploaded_file})}
+          post :create, {:resource => valid_attributes({:one => empty_file, :two => removed_file, :three => uploaded_file, :four => uploaded_file})}
         end.should change(Resource, :count).by(1)
         resource = Resource.last
         resource.attachments.count.should == 2
@@ -245,20 +245,155 @@ describe ResourcesController do
     describe "with invalid params" do
       it "should re-render new page with empty attributes file" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => attributes_empty_file})}
+          post :create, {:resource => valid_attributes({:one => empty_file})}
           response.should render_template('new')
         end.should_not change(Resource, :count)
       end
 
       it "should re-render template new with removed attributes file" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => attributes_removed_file})}
+          post :create, {:resource => valid_attributes({:one => removed_file})}
           response.should render_template('new')
         end.should_not change(Resource, :count)
       end
     end
   end
 
+  describe "PUT update" do
+    before(:each) do
+      login_user
+
+      #attach two documents
+      @attachment_one = FactoryGirl.create(:attachment)
+      @attachment_two = FactoryGirl.create(:attachment)
+      @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
+    end
+
+    def valid_attributes params
+      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :attachments_attributes => params}
+    end
+
+    def file_previously_uploaded_untouched attachment_id
+     {:file_cache => '', :_destroy=>"false", :id=>"#{attachment_id}"} 
+    end
+
+    def file_empty_added
+     {:file_cache => "", :_destroy=>"false"} 
+    end
+
+    def file_empty_added_removed
+     {:file_cache => "", :_destroy=>"1"} 
+    end
+
+    def file_uploaded
+     {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"false"} 
+    end
+
+    def file_previously_uploaded_removed attachment_id
+     {:file_cache => "", :_destroy=>"1", :id=>"#{attachment_id}"} 
+    end
+
+    def file_uploaded_removed
+     {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"1"} 
+    end
+
+    def valid_session
+      {}
+    end
+
+    describe "with valid params" do
+      it "updates resource with no changes" do
+        lambda do
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)})}
+          response.should redirect_to(resource_path(:id => @resource.id))
+        end.should_not change(@resource.attachments, :count)
+      end
+
+      it "updates resource with two empty files" do
+        lambda do
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_empty_added, :four => file_empty_added})}
+          response.should redirect_to(resource_path(:id => @resource.id))
+        end.should_not change(@resource.attachments, :count)
+      end
+
+      it "updates resource with and removes one file" do
+        lambda do
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)})}
+          response.should redirect_to(resource_path(:id => @resource.id))
+        end.should change(@resource.attachments, :count).from(2).to(1)
+      end
+
+      it "updates resource with uploaded file but then removes it" do
+        lambda do
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_uploaded_removed})}
+          response.should redirect_to(resource_path(:id => @resource.id))
+        end.should_not change(@resource.attachments, :count)
+      end
+
+      it "updates resource with an empty file added/removed" do
+        lambda do
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_empty_added_removed})}
+          response.should redirect_to(resource_path(:id => @resource.id))
+        end.should_not change(@resource.attachments, :count)
+      end
+
+      it "updates resource with two additional files" do
+        lambda do
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_uploaded, :four =>file_uploaded})}
+          response.should redirect_to(resource_path(:id => @resource.id))
+        end.should change(@resource.attachments, :count).from(2).to(4)
+      end
+    end
+
+    describe "with invalid params" do
+      it "attempts to update resource by removing all attachments" do
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_removed(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)})}
+          response.should render_template('edit')
+      end
+    end
+=begin
+      it "updates the requested resource" do
+        resource = Resource.create! valid_attributes
+        # Assuming there are no other resources in the database, this
+        # specifies that the Resource created on the previous line
+        # receives the :update_attributes message with whatever params are
+        # submitted in the request.
+        Resource.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
+        put :update, {:id => resource.to_param, :resource => {'these' => 'params'}}, valid_session
+      end
+
+      it "assigns the requested resource as @resource" do
+        resource = Resource.create! valid_attributes
+        put :update, {:id => resource.to_param, :resource => valid_attributes}, valid_session
+        assigns(:resource).should eq(resource)
+      end
+
+      it "redirects to the resource" do
+        resource = Resource.create! valid_attributes
+        put :update, {:id => resource.to_param, :resource => valid_attributes}, valid_session
+        response.should redirect_to(resource)
+      end
+    end
+
+    describe "with invalid params" do
+      it "assigns the resource as @resource" do
+        resource = Resource.create! valid_attributes
+        # Trigger the behavior that occurs when invalid params are submitted
+        Resource.any_instance.stub(:save).and_return(false)
+        put :update, {:id => resource.to_param, :resource => {}}, valid_session
+        assigns(:resource).should eq(resource)
+      end
+
+      it "re-renders the 'edit' template" do
+        resource = Resource.create! valid_attributes
+        # Trigger the behavior that occurs when invalid params are submitted
+        Resource.any_instance.stub(:save).and_return(false)
+        put :update, {:id => resource.to_param, :resource => {}}, valid_session
+        response.should render_template("edit")
+      end
+    end
+=end
+  end
 =begin
   # This should return the minimal set of attributes required to create a valid
   # Resource. As you add validations to Resource, be sure to

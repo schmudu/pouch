@@ -116,64 +116,46 @@ class ResourcesController < ApplicationController
   def update
 #clear nil attachments
     @resource = Resource.find(params[:id])
-=begin
-    logger.debug("\n\n\n==DEBUG: update called!\n")
-    @resource = Resource.find(params[:id])
-    unless params[:resource][:attachments_attributes].nil?
-      params[:resource][:attachments_attributes].each do |key, attribute|
-        #logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)} destroy:#{attribute[:_destroy]} falseClass:#{attribute[:_destroy] == 'false'}")
-        logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)}")
+    counter = @resource.attachments.count   #track number of attachments resource will have if we update it
 
-        #clear out attachments where the file and file_cache is empty(or nil)
-        if(((attribute[:file].kind_of?(NilClass)) || (attribute[:file] == '')) && ((attribute[:file_cache].kind_of?(NilClass)) || (attribute[:file_cache] == '')))
-          logger.debug("\n\nDELETING RESOURCE: key: #{key} cache:#{attribute[:file_cache]}")
+    params[:resource][:attachments_attributes].each do |key, attribute|
+      #control structure created because we can't validate the model
+      #sum the number of potential attachments that the resource will have
+      if(attribute[:_destroy] == 'false')
+        if((attribute[:id].kind_of?(NilClass)) && (attribute[:file].nil?))
+          #clear out attachments where no file was referenced
           params[:resource][:attachments_attributes].delete(key)
+        elsif(attribute[:id].nil?)
+          #uploading new file
+          counter += 1
+        else
+          #file untouched, previously loaded
         end
-        if((attribute[:_destroy] != 'false') || (((attribute[:file].kind_of?(NilClass)) || (attribute[:file] == '')) && ((attribute[:file_cache].kind_of?(NilClass)) || (attribute[:file_cache] == ''))))
-          logger.debug("\n\nDELETING RESOURCE: key: #{key} cache:#{attribute[:file_cache]}")
-          params[:resource][:attachments_attributes].delete(key)
-        end
-      end
-      
-      
-      #@resource = Resource.new(params[:resource])
-      #@resource.user_id = current_user.id
-      logger.debug("===OUTPUT: before descriptiont: #{params[:resource][:description].empty?}")
-      @resource.update_attributes(params[:resource])
-      logger.debug("===OUTPUT: after resource description: #{@resource.description}")
-      if params[:resource][:attachments_attributes].empty?
-        @resource.valid?
-        @resource.errors[:attachments] = 'Must provide at least one attachment'
-        render 'edit'
-      elsif @resource.update_attributes(params[:resource])
-        redirect_to @resource, notice: 'Resource was successfully updated.' 
       else
-        render 'edit'
+        if(!attribute[:file].nil?)
+          #delete files that were uploaded, but were removed
+          params[:resource][:attachments_attributes].delete(key)
+        elsif(!attribute[:id].nil?)
+          #file previously uploaded and will be removed
+          counter += -1
+        else
+          #empty file was added and removed
+        end
       end
-    else
-      #@resource = Resource.new(params[:resource])
-      #@resource.user_id = current_user.id
+    end
 
-      #no attachments, validate for any other errors 
-      @resource.update_attributes(params[:resource])
+    if(counter<ConstantsHelper::RESOURCE_ATTACHMENTS_MIN_NUM)
+      #counter needs to have at least one attachment
       @resource.valid?
       @resource.errors[:attachments] = 'Must provide at least one attachment'
       render 'edit'
-    end
-=end
-    respond_to do |format|
-      if @resource.update_attributes(params[:resource])
-        format.html { redirect_to @resource, notice: 'Resource was successfully updated.' }
-        format.json { head :no_content }
-      else
-        @resource.errors.each do |key, error|
-          logger.debug("==DEBUG KEY: #{key} ERROR: #{error}\n")
-        end
-
-        #format.html { render :text => "tried to update attributes but failed."}
-        format.html { render action: "edit" }
-        format.json { render json: @resource.errors, status: :unprocessable_entity }
+    elsif @resource.update_attributes(params[:resource])
+      redirect_to @resource, notice: 'Resource was successfully updated.' 
+    else
+      @resource.errors.each do |key, error|
+        logger.debug("==DEBUG KEY: #{key} ERROR: #{error}\n")
       end
+      render 'edit'
     end
   end
 
