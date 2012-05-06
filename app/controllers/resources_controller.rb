@@ -1,7 +1,7 @@
 class ResourcesController < ApplicationController
   include ResourcesHelper
   helper :resources
-  before_filter :authenticate_user!, :only => [:new, :download]
+  before_filter :authenticate_user!, :only => [:new, :download, :create]
   def download_cached_attachment 
     path = "tmp/cache/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
     send_file path, :x_sendfile=>true
@@ -73,24 +73,29 @@ class ResourcesController < ApplicationController
   # POST /resources
   # POST /resources.json
   def create
-    logger.debug("\n before: attribute count: #{params[:resource][:attachments_attributes].nil?}")
+    logger.debug("\n\n====before: attribute count: #{params[:resource][:attachments_attributes].nil?}")
     #clear nil attachments
     unless params[:resource][:attachments_attributes].nil?
+    logger.debug("====attribute count: #{params[:resource][:attachments_attributes].count}")
       params[:resource][:attachments_attributes].each do |key, attribute|
         #logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)} destroy:#{attribute[:_destroy]} falseClass:#{attribute[:_destroy] == 'false'}")
-        #logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)}")
+        logger.debug("====LISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file.empty? #{attribute[:file] == ''} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)}")
 
         #clear out attachments where the file and file_cache is empty(or nil) or destroy is not false
         if((attribute[:_destroy] != 'false') || (((attribute[:file].kind_of?(NilClass)) || (attribute[:file] == '')) && ((attribute[:file_cache].kind_of?(NilClass)) || (attribute[:file_cache] == ''))))
-          #logger.debug("\n\nDELETING RESOURCE: key: #{key} cache:#{attribute[:file_cache]}")
+          logger.debug("\n\nDELETING RESOURCE: key: #{key} cache:#{attribute[:file_cache]}")
           params[:resource][:attachments_attributes].delete(key)
         end
       end
 
       @resource = Resource.new(params[:resource])
       @resource.user_id = current_user.id
-      #logger.debug("===OUTPUT: attachments: #{params[:resource][:attachments_attributes].empty?}")
-      if @resource.save
+      logger.debug("====OUTPUT: attachments: #{params[:resource][:attachments_attributes].empty?}")
+      if params[:resource][:attachments_attributes].empty?
+        @resource.valid?
+        @resource.errors[:attachments] = 'Must provide at least one attachment'
+        render 'new'
+      elsif @resource.save
         redirect_to @resource, notice: 'Resource was successfully created.' 
       else
         render 'new'
@@ -109,9 +114,53 @@ class ResourcesController < ApplicationController
   # PUT /resources/1
   # PUT /resources/1.json
   def update
+#clear nil attachments
+    @resource = Resource.find(params[:id])
+=begin
     logger.debug("\n\n\n==DEBUG: update called!\n")
     @resource = Resource.find(params[:id])
+    unless params[:resource][:attachments_attributes].nil?
+      params[:resource][:attachments_attributes].each do |key, attribute|
+        #logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)} destroy:#{attribute[:_destroy]} falseClass:#{attribute[:_destroy] == 'false'}")
+        logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)}")
 
+        #clear out attachments where the file and file_cache is empty(or nil)
+        if(((attribute[:file].kind_of?(NilClass)) || (attribute[:file] == '')) && ((attribute[:file_cache].kind_of?(NilClass)) || (attribute[:file_cache] == '')))
+          logger.debug("\n\nDELETING RESOURCE: key: #{key} cache:#{attribute[:file_cache]}")
+          params[:resource][:attachments_attributes].delete(key)
+        end
+        if((attribute[:_destroy] != 'false') || (((attribute[:file].kind_of?(NilClass)) || (attribute[:file] == '')) && ((attribute[:file_cache].kind_of?(NilClass)) || (attribute[:file_cache] == ''))))
+          logger.debug("\n\nDELETING RESOURCE: key: #{key} cache:#{attribute[:file_cache]}")
+          params[:resource][:attachments_attributes].delete(key)
+        end
+      end
+      
+      
+      #@resource = Resource.new(params[:resource])
+      #@resource.user_id = current_user.id
+      logger.debug("===OUTPUT: before descriptiont: #{params[:resource][:description].empty?}")
+      @resource.update_attributes(params[:resource])
+      logger.debug("===OUTPUT: after resource description: #{@resource.description}")
+      if params[:resource][:attachments_attributes].empty?
+        @resource.valid?
+        @resource.errors[:attachments] = 'Must provide at least one attachment'
+        render 'edit'
+      elsif @resource.update_attributes(params[:resource])
+        redirect_to @resource, notice: 'Resource was successfully updated.' 
+      else
+        render 'edit'
+      end
+    else
+      #@resource = Resource.new(params[:resource])
+      #@resource.user_id = current_user.id
+
+      #no attachments, validate for any other errors 
+      @resource.update_attributes(params[:resource])
+      @resource.valid?
+      @resource.errors[:attachments] = 'Must provide at least one attachment'
+      render 'edit'
+    end
+=end
     respond_to do |format|
       if @resource.update_attributes(params[:resource])
         format.html { redirect_to @resource, notice: 'Resource was successfully updated.' }

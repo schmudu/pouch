@@ -13,7 +13,7 @@
     <% if !attachment_form.object.file.path.blank? %>
       <% #file_info = get_cache_file_info attachment_form.object.file.path %>
       <% puts "\n\npath:#{attachment_form.object.file.path}\n" %>
-      <% file_info = get_file_info(attachment_form.object.file.path,false) %>
+      <% file_info = get_file_info(attachment_form.object.file.path) %>
       <% #puts "folder:#{file_info[:folder]}" %>
       <% #puts "folder:#{attachment_form.object.file.path.blank?}" %>
       <% #image_tag(File.join('/tmp/cache/', file_info[:folder]))%>
@@ -22,11 +22,9 @@
     <% else %>
       <%= attachment_form.file_field :file %>
     <% end %>
-    <% #attachment_form.file_field :file %>
-    <% #attachment_form.file_field :file %>
     <%= attachment_form.hidden_field :file_cache %>
-    </p>
     <%= attachment_form.link_to_remove "Remove this attachment" %>
+    </p>
   <% end %>
   <%= f.link_to_add "Add attachment", :attachments %>
   <p><%= f.submit %></p>

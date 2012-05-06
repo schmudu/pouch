@@ -19,7 +19,9 @@ require 'spec_helper'
 # that an instance is receiving a specific message.
 
 describe ResourcesController do
+  include Devise::TestHelpers
   include ResourcesHelper
+  include ConstantsHelper
   render_views
   
   describe "GET download" do
@@ -168,13 +170,93 @@ describe ResourcesController do
       get :new
       response.should redirect_to(new_user_session_path)
     end
-=begin
+
     it "after login should go to page" do
       login_user
       get :new
       response.should have_selector('body', :content => 'New resource')
     end
-=end
+  end
+
+  describe "POST create" do
+    before(:each) do
+      login_user
+    end
+
+    def valid_attributes params
+      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :attachments_attributes => params}
+        #{:one => attributes_uploaded_file}
+      #}
+    end
+
+    def attributes_empty_file
+     {} 
+    end
+
+    def attributes_removed_file
+     {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"1"} 
+    end
+
+    def attributes_uploaded_file
+     {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"false"} 
+    end
+
+    def valid_session
+      {}
+    end
+
+    describe "user not signed in" do
+      before(:each) do
+        logout_user
+      end
+
+      it "should redirect to sign in page" do
+        post :create, {:resource => valid_attributes(:one => attributes_uploaded_file)}, valid_session
+        response.should redirect_to(new_user_session_path)
+      end
+    end
+
+    describe "with valid params" do
+      it "creates a new Resource" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => attributes_uploaded_file})}
+          resource = Resource.last
+          response.should redirect_to(resource_path(:id => resource.id))
+        end.should change(Resource, :count).by(1)
+      end
+
+      it "creates a new Resource with three attachments" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => attributes_uploaded_file, :two => attributes_uploaded_file, :three => attributes_uploaded_file})}
+        end.should change(Resource, :count).by(1)
+        resource = Resource.last
+        resource.attachments.count.should == 3
+      end
+
+      it "creates a new Resource with two attachment, one removed, and one empty" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => attributes_empty_file, :two => attributes_removed_file, :three => attributes_uploaded_file, :four => attributes_uploaded_file})}
+        end.should change(Resource, :count).by(1)
+        resource = Resource.last
+        resource.attachments.count.should == 2
+      end
+    end
+
+    describe "with invalid params" do
+      it "should re-render new page with empty attributes file" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => attributes_empty_file})}
+          response.should render_template('new')
+        end.should_not change(Resource, :count)
+      end
+
+      it "should re-render template new with removed attributes file" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => attributes_removed_file})}
+          response.should render_template('new')
+        end.should_not change(Resource, :count)
+      end
+    end
   end
 
 =begin
@@ -216,42 +298,6 @@ describe ResourcesController do
     end
   end
 
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new Resource" do
-        expect {
-          post :create, {:resource => valid_attributes}, valid_session
-        }.to change(Resource, :count).by(1)
-      end
-
-      it "assigns a newly created resource as @resource" do
-        post :create, {:resource => valid_attributes}, valid_session
-        assigns(:resource).should be_a(Resource)
-        assigns(:resource).should be_persisted
-      end
-
-      it "redirects to the created resource" do
-        post :create, {:resource => valid_attributes}, valid_session
-        response.should redirect_to(Resource.last)
-      end
-    end
-
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved resource as @resource" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Resource.any_instance.stub(:save).and_return(false)
-        post :create, {:resource => {}}, valid_session
-        assigns(:resource).should be_a_new(Resource)
-      end
-
-      it "re-renders the 'new' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Resource.any_instance.stub(:save).and_return(false)
-        post :create, {:resource => {}}, valid_session
-        response.should render_template("new")
-      end
-    end
-  end
 
   describe "PUT update" do
     describe "with valid params" do

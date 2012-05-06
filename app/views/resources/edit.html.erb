@@ -1,5 +1,11 @@
 <h1>Editing resource</h1>
 
+<ul>
+<% @resource.errors.each do |key, error| %>
+  <li><%= error %></li>
+<% end %>
+
+</ul>
 <%= render 'form_edit' %>
 
 <%= link_to 'Show', @resource %> |

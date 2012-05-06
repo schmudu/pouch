@@ -1,10 +1,12 @@
 module ResourcesHelper
-  def get_file_info(full_path, is_upload = true)
+  def get_file_info full_path
     #is_upload is true(upload) or false(cache...tmp/cache to be exact)
     results = {}
 
     #find uploads directory
-    is_upload ? full_path =~ /\/uploads\// : full_path =~ /\/cache\//
+    match_dir = full_path =~ /\/uploads\// 
+    full_path =~ /\/cache\// if match_dir.nil? 
+    #is_upload ? full_path =~ /\/uploads\// : full_path =~ /\/cache\//
     post_match = $~.post_match
 
     #find folder
