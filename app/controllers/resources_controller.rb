@@ -1,7 +1,9 @@
 class ResourcesController < ApplicationController
   include ResourcesHelper
   helper :resources
-  before_filter :authenticate_user!, :only => [:new, :download, :create, :edit, :destroy]
+  before_filter :authenticate_user!, :only => [:new, :download, :create, :edit, :destroy, :update]
+  before_filter :is_resource_owner?, :only => [:edit, :destroy, :update]
+
   def download_cached_attachment 
     path = "tmp/cache/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
     send_file path, :x_sendfile=>true
@@ -169,5 +171,12 @@ class ResourcesController < ApplicationController
       format.html { redirect_to resources_url }
       format.json { head :no_content }
     end
+  end
+
+  private 
+
+  def is_resource_owner?
+    @resource = Resource.find(params[:id])
+    redirect_to :controller=>'pages', :action => 'unauthorized' if(@resource.user_id != current_user.id)
   end
 end

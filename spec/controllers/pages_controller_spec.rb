@@ -86,4 +86,20 @@ describe PagesController do
       response.should be_success
     end
   end
+
+  describe "GET 'unauthorized'" do
+    it "returns http success" do
+      get 'unauthorized'
+      response.should be_success
+    end
+  end
+
+=begin
+  describe "GET 'not_found'" do
+    it "returns http success" do
+      visit '/something_crazy.html'
+      response.should render_template('not_found')
+    end
+  end
+=end
 end

@@ -17,11 +17,12 @@ Mijikai::Application.routes.draw do
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
-  match 'about' => 'pages#about'
-  match 'contact' => 'pages#contact'
-  match 'help' => 'pages#help'
-  match 'privacy' => 'pages#privacy'
-  match 'terms' => 'pages#terms'
+  match 'about' => 'pages#about', :as => 'about'
+  match 'contact' => 'pages#contact', :as => 'contact'
+  match 'help' => 'pages#help', :as => 'help'
+  match 'privacy' => 'pages#privacy', :as => 'privacy'
+  match 'terms' => 'pages#terms', :as => 'terms'
+  match 'unauthorized' => 'pages#unauthorized', :as => 'unauthorized'
   
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
@@ -63,6 +64,7 @@ Mijikai::Application.routes.draw do
   # just remember to delete public/index.html.
   root :to => 'pages#home'
 
+  match '*something' => 'pages#not_found'
 =begin
   #COMING SOON 
   match '*something', :to => redirect('/coming_soon.html')

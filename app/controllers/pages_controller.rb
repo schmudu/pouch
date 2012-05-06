@@ -7,12 +7,12 @@ class PagesController < ApplicationController
     @title = 'Home'
   end
 
-  def how_it_works
-    @title = 'How It Works'
-  end
-
   def about
     @title = 'About'
+  end
+
+  def not_found
+    @title = 'Page Not Found'
   end
 
   def terms
@@ -21,5 +21,9 @@ class PagesController < ApplicationController
 
   def privacy
     @title = 'Privacy Policy'
+  end
+
+  def unauthorized
+    @title = 'Unauthorized'
   end
 end

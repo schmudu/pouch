@@ -28,10 +28,16 @@ describe ResourcesController do
     {}
   end 
 
+  before(:each) do
+    @another_user = FactoryGirl.create(:user, :email => 'abc@abc.com', :screen_name => 'toad', :password => 'abC123', :password_confirmation => 'abC123')
+    @another_user.confirm!
+  end
+
   describe "GET download" do
     before(:each) do
       @user = FactoryGirl.create(:user)
       @user.confirm!
+
       @resource = FactoryGirl.create(:resource, :user_id => @user.id)
     end
 
@@ -289,6 +295,12 @@ describe ResourcesController do
      {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"1"} 
     end
 
+    it "should not allow anyone to update resources if not signed in" do
+      sign_out @user
+      post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)})}
+      response.should redirect_to(new_user_session_path)
+    end 
+
     describe "with valid params" do
       it "updates resource with no changes" do
         lambda do
@@ -338,9 +350,15 @@ describe ResourcesController do
           post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_removed(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)})}
           response.should render_template('edit')
       end
+
+      it "another user tries to edit a resource they do not own" do
+        sign_out @user
+        sign_in @another_user
+        post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_removed(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)})}
+        response.should redirect_to(unauthorized_path)
+      end
     end
   end
-
 
   describe "DELETE destroy" do
     before(:each) do
@@ -363,17 +381,22 @@ describe ResourcesController do
         delete :destroy, {:id => @resource.to_param}
       end.should change(Resource, :count).by(-1)
     end
-  end
 
+    it "another user tries to edit a resource they do not own" do
+      sign_out @user
+      sign_in @another_user
+      delete :destroy, {:id => @resource.to_param}
+      response.should redirect_to(unauthorized_path)
+    end
+  end
 
   describe "GET edit" do
     before(:each) do
-      login_user
-
-      #attach two documents
-      @attachment_one = FactoryGirl.create(:attachment)
-      @attachment_two = FactoryGirl.create(:attachment)
-      @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
+        login_user
+        #attach two documents
+        @attachment_one = FactoryGirl.create(:attachment)
+        @attachment_two = FactoryGirl.create(:attachment)
+        @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
     end
 
     it "should not allow anyone to delete resources if not signed in" do
@@ -386,6 +409,13 @@ describe ResourcesController do
       get :edit, {:id => @resource.to_param}
       response.should render_template('edit')
     end 
+
+    it "another user tries to edit a resource they do not own" do
+      sign_out @user
+      sign_in @another_user
+      get :edit, {:id => @resource.to_param}
+      response.should redirect_to(unauthorized_path)
+    end
   end
 =begin
   # This should return the minimal set of attributes required to create a valid
@@ -409,22 +439,5 @@ describe ResourcesController do
       assigns(:resources).should eq([resource])
     end
   end
-
-  describe "GET show" do
-    it "assigns the requested resource as @resource" do
-      resource = Resource.create! valid_attributes
-      get :show, {:id => resource.to_param}, valid_session
-      assigns(:resource).should eq(resource)
-    end
-  end
-
-  describe "GET edit" do
-    it "assigns the requested resource as @resource" do
-      resource = Resource.create! valid_attributes
-      get :edit, {:id => resource.to_param}, valid_session
-      assigns(:resource).should eq(resource)
-    end
-  end
-
 =end
 end
