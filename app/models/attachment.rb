@@ -1,4 +1,5 @@
 class Attachment < ActiveRecord::Base
+  #Note: Because we are using nested form, we can not add any validators to the file attribute
   attr_accessible :file, :file_cache, :downloads
   #attr_accessor :file_cache
 

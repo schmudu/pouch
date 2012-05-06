@@ -12,7 +12,8 @@
     <%= attachment_form.label :file %>
     <% if !attachment_form.object.file.path.blank? %>
       <% #file_info = get_cache_file_info attachment_form.object.file.path %>
-      <% file_info = get_file_info attachment_form.object.file.path %>
+      <% puts "\n\npath:#{attachment_form.object.file.path}\n" %>
+      <% file_info = get_file_info(attachment_form.object.file.path,false) %>
       <% #puts "folder:#{file_info[:folder]}" %>
       <% #puts "folder:#{attachment_form.object.file.path.blank?}" %>
       <% #image_tag(File.join('/tmp/cache/', file_info[:folder]))%>

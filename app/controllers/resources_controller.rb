@@ -1,4 +1,5 @@
 class ResourcesController < ApplicationController
+  include ResourcesHelper
   helper :resources
   before_filter :authenticate_user!, :only => [:new, :download]
   def download_cached_attachment 
@@ -72,19 +73,36 @@ class ResourcesController < ApplicationController
   # POST /resources
   # POST /resources.json
   def create
-    @resource = Resource.new(params[:resource])
-    @resource.user_id = current_user.id
+    logger.debug("\n before: attribute count: #{params[:resource][:attachments_attributes].nil?}")
+    #clear nil attachments
+    unless params[:resource][:attachments_attributes].nil?
+      params[:resource][:attachments_attributes].each do |key, attribute|
+        #logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)} destroy:#{attribute[:_destroy]} falseClass:#{attribute[:_destroy] == 'false'}")
+        #logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)}")
 
-    respond_to do |format|
-      if @resource.save
-        format.html { redirect_to @resource, notice: 'Resource was successfully created.' }
-        format.json { render json: @resource, status: :created, location: @resource }
-      else
-        @resource.errors.each do |e|
+        #clear out attachments where the file and file_cache is empty(or nil) or destroy is not false
+        if((attribute[:_destroy] != 'false') || (((attribute[:file].kind_of?(NilClass)) || (attribute[:file] == '')) && ((attribute[:file_cache].kind_of?(NilClass)) || (attribute[:file_cache] == ''))))
+          #logger.debug("\n\nDELETING RESOURCE: key: #{key} cache:#{attribute[:file_cache]}")
+          params[:resource][:attachments_attributes].delete(key)
         end
-        format.html { render action: "new" }
-        format.json { render json: @resource.errors, status: :unprocessable_entity }
       end
+
+      @resource = Resource.new(params[:resource])
+      @resource.user_id = current_user.id
+      #logger.debug("===OUTPUT: attachments: #{params[:resource][:attachments_attributes].empty?}")
+      if @resource.save
+        redirect_to @resource, notice: 'Resource was successfully created.' 
+      else
+        render 'new'
+      end
+    else
+      @resource = Resource.new(params[:resource])
+      @resource.user_id = current_user.id
+
+      #no attachments, validate for any other errors 
+      @resource.valid?
+      @resource.errors[:attachments] = 'Must provide at least one attachment'
+      render 'new'
     end
   end
 
