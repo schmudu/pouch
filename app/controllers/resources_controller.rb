@@ -1,7 +1,7 @@
 class ResourcesController < ApplicationController
   include ResourcesHelper
   helper :resources
-  before_filter :authenticate_user!, :only => [:new, :download, :create]
+  before_filter :authenticate_user!, :only => [:new, :download, :create, :edit, :destroy]
   def download_cached_attachment 
     path = "tmp/cache/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
     send_file path, :x_sendfile=>true

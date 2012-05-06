@@ -23,7 +23,11 @@ describe ResourcesController do
   include ResourcesHelper
   include ConstantsHelper
   render_views
-  
+ 
+  def valid_session
+    {}
+  end 
+
   describe "GET download" do
     before(:each) do
       @user = FactoryGirl.create(:user)
@@ -96,14 +100,6 @@ describe ResourcesController do
       attachment = Attachment.find_by_id(@resource.attachments.first.id)
       attachment.user_attachment_downloads.length.should == 1
     end
-
-=begin
-    it "should increment user download count after success" do
-      login_user
-      get :download
-      response.should be_success
-    end
-=end
   end
 
   describe "GET show" do
@@ -201,10 +197,6 @@ describe ResourcesController do
      {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"false"} 
     end
 
-    def valid_session
-      {}
-    end
-
     describe "user not signed in" do
       before(:each) do
         logout_user
@@ -297,10 +289,6 @@ describe ResourcesController do
      {:file => Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt'), :_destroy=>"1"} 
     end
 
-    def valid_session
-      {}
-    end
-
     describe "with valid params" do
       it "updates resource with no changes" do
         lambda do
@@ -351,48 +339,53 @@ describe ResourcesController do
           response.should render_template('edit')
       end
     end
-=begin
-      it "updates the requested resource" do
-        resource = Resource.create! valid_attributes
-        # Assuming there are no other resources in the database, this
-        # specifies that the Resource created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        Resource.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, {:id => resource.to_param, :resource => {'these' => 'params'}}, valid_session
-      end
+  end
 
-      it "assigns the requested resource as @resource" do
-        resource = Resource.create! valid_attributes
-        put :update, {:id => resource.to_param, :resource => valid_attributes}, valid_session
-        assigns(:resource).should eq(resource)
-      end
 
-      it "redirects to the resource" do
-        resource = Resource.create! valid_attributes
-        put :update, {:id => resource.to_param, :resource => valid_attributes}, valid_session
-        response.should redirect_to(resource)
-      end
+  describe "DELETE destroy" do
+    before(:each) do
+      login_user
+
+      #attach two documents
+      @attachment_one = FactoryGirl.create(:attachment)
+      @attachment_two = FactoryGirl.create(:attachment)
+      @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
     end
 
-    describe "with invalid params" do
-      it "assigns the resource as @resource" do
-        resource = Resource.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Resource.any_instance.stub(:save).and_return(false)
-        put :update, {:id => resource.to_param, :resource => {}}, valid_session
-        assigns(:resource).should eq(resource)
-      end
-
-      it "re-renders the 'edit' template" do
-        resource = Resource.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Resource.any_instance.stub(:save).and_return(false)
-        put :update, {:id => resource.to_param, :resource => {}}, valid_session
-        response.should render_template("edit")
-      end
+    it "should not allow anyone to delete resources if not signed in" do
+      sign_out @user
+      delete :destroy, {:id => @resource.to_param}
+      response.should redirect_to(new_user_session_path)
     end
-=end
+
+    it "should delete resource if destroy method called" do
+      lambda do
+        delete :destroy, {:id => @resource.to_param}
+      end.should change(Resource, :count).by(-1)
+    end
+  end
+
+
+  describe "GET edit" do
+    before(:each) do
+      login_user
+
+      #attach two documents
+      @attachment_one = FactoryGirl.create(:attachment)
+      @attachment_two = FactoryGirl.create(:attachment)
+      @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
+    end
+
+    it "should not allow anyone to delete resources if not signed in" do
+      sign_out @user
+      get :edit, {:id => @resource.to_param}
+      response.should redirect_to(new_user_session_path)
+    end 
+
+    it "render template edit if user is signed in" do
+      get :edit, {:id => @resource.to_param}
+      response.should render_template('edit')
+    end 
   end
 =begin
   # This should return the minimal set of attributes required to create a valid
@@ -433,64 +426,5 @@ describe ResourcesController do
     end
   end
 
-
-  describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested resource" do
-        resource = Resource.create! valid_attributes
-        # Assuming there are no other resources in the database, this
-        # specifies that the Resource created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        Resource.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, {:id => resource.to_param, :resource => {'these' => 'params'}}, valid_session
-      end
-
-      it "assigns the requested resource as @resource" do
-        resource = Resource.create! valid_attributes
-        put :update, {:id => resource.to_param, :resource => valid_attributes}, valid_session
-        assigns(:resource).should eq(resource)
-      end
-
-      it "redirects to the resource" do
-        resource = Resource.create! valid_attributes
-        put :update, {:id => resource.to_param, :resource => valid_attributes}, valid_session
-        response.should redirect_to(resource)
-      end
-    end
-
-    describe "with invalid params" do
-      it "assigns the resource as @resource" do
-        resource = Resource.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Resource.any_instance.stub(:save).and_return(false)
-        put :update, {:id => resource.to_param, :resource => {}}, valid_session
-        assigns(:resource).should eq(resource)
-      end
-
-      it "re-renders the 'edit' template" do
-        resource = Resource.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Resource.any_instance.stub(:save).and_return(false)
-        put :update, {:id => resource.to_param, :resource => {}}, valid_session
-        response.should render_template("edit")
-      end
-    end
-  end
-
-  describe "DELETE destroy" do
-    it "destroys the requested resource" do
-      resource = Resource.create! valid_attributes
-      expect {
-        delete :destroy, {:id => resource.to_param}, valid_session
-      }.to change(Resource, :count).by(-1)
-    end
-
-    it "redirects to the resources list" do
-      resource = Resource.create! valid_attributes
-      delete :destroy, {:id => resource.to_param}, valid_session
-      response.should redirect_to(resources_url)
-    end
-  end
 =end
 end

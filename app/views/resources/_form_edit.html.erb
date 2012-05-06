@@ -13,7 +13,7 @@
     <% if !attachment_form.object.file.path.blank? %>
       <% file_info = get_file_info attachment_form.object.file.path %>
       <% #puts "folder:#{file_info[:folder]}" %>
-      <% puts "\n\nidentifer:#{file_info[:identifier]}\n" %>
+      <% #puts "\n\nidentifer:#{file_info[:identifier]}\n" %>
       <% #puts "folder:#{attachment_form.object.file.path.blank?}" %>
       <% #image_tag(File.join('/tmp/cache/', file_info[:folder]))%>
       <% #attachment_form.file_field :file, :value => "#{File.join('/tmp/cache/', file_info[:folder], '/',attachment_form.object.file.identifier)}" %>

@@ -9,4 +9,5 @@
 <%= render 'form_edit' %>
 
 <%= link_to 'Show', @resource %> |
-<%= link_to 'Back', resources_path %>
+<%= link_to 'Back', resources_path %> |
+<%= link_to 'Delete Resource', resource_path(@resource.id), :confirm => 'Are you sure?', :method => :delete %>
