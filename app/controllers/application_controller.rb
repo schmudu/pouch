@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   #used for testing purposes, comment out line below when pushing to production
-  before_filter :authenticate_test_user
+  #before_filter :authenticate_test_user
 
   private
   def authenticate_test_user
