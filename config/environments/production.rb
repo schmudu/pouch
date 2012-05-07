@@ -1,7 +1,7 @@
 Mijikai::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
-  #config.action_mailer.default_url_options = { :host => 'http://testpouch.heroku.com' }   #production
-  config.action_mailer.default_url_options = { :host => 'http://www.lessonpouch.com' }    #test
+  config.action_mailer.default_url_options = { :host => 'testpouch.heroku.com' }   #production
+  #config.action_mailer.default_url_options = { :host => 'www.lessonpouch.com' }    #test
 
   # Code is not reloaded between requests
   config.cache_classes = true
