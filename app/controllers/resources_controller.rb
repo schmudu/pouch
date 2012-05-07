@@ -75,42 +75,44 @@ class ResourcesController < ApplicationController
   # POST /resources
   # POST /resources.json
   def create
-    logger.debug("\n\n====before: attribute count: #{params[:resource][:attachments_attributes].nil?}")
     #clear nil attachments
     unless params[:resource][:attachments_attributes].nil?
-    logger.debug("====attribute count: #{params[:resource][:attachments_attributes].count}")
       params[:resource][:attachments_attributes].each do |key, attribute|
-        #logger.debug("\n\nLISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)} destroy:#{attribute[:_destroy]} falseClass:#{attribute[:_destroy] == 'false'}")
-        logger.debug("====LISTING RESOURCE: destroy: #{attribute[:_destroy]} file.nil?: #{attribute[:file].kind_of?(NilClass)} file.empty? #{attribute[:file] == ''} file_cache.nil?:#{attribute[:file_cache].kind_of?(NilClass)}")
-
         #clear out attachments where the file and file_cache is empty(or nil) or destroy is not false
         if((attribute[:_destroy] != 'false') || (((attribute[:file].kind_of?(NilClass)) || (attribute[:file] == '')) && ((attribute[:file_cache].kind_of?(NilClass)) || (attribute[:file_cache] == ''))))
           logger.debug("\n\nDELETING RESOURCE: key: #{key} cache:#{attribute[:file_cache]}")
           params[:resource][:attachments_attributes].delete(key)
         end
       end
-
+    end
       @resource = Resource.new(params[:resource])
       @resource.user_id = current_user.id
-      logger.debug("====OUTPUT: attachments: #{params[:resource][:attachments_attributes].empty?}")
-      if params[:resource][:attachments_attributes].empty?
-        @resource.valid?
+      @resource.valid?
+
+      @resource.errors[:agreed] = 'Must agree to terms of use.' unless @resource.agreed == '1'
+      if((params[:resource][:attachments_attributes].nil?) || (params[:resource][:attachments_attributes].empty?))
         @resource.errors[:attachments] = 'Must provide at least one attachment'
+        render 'new'
+      elsif !@resource.errors.empty?
         render 'new'
       elsif @resource.save
         redirect_to @resource, notice: 'Resource was successfully created.' 
       else
         render 'new'
       end
+=begin
     else
       @resource = Resource.new(params[:resource])
       @resource.user_id = current_user.id
-
-      #no attachments, validate for any other errors 
       @resource.valid?
+
+      #check terms of use
+      @resource.errors[:agreed] = 'Must agree to terms of use.' unless @resource.agreed == '1'
+
       @resource.errors[:attachments] = 'Must provide at least one attachment'
       render 'new'
     end
+=end
   end
 
   # PUT /resources/1

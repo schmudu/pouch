@@ -1,6 +1,7 @@
 class Resource < ActiveRecord::Base
   #Note: Because we are using nested form, we can not add any validators to the attachments attribute
-  attr_accessible :description, :title, :attachments_attributes, :user_id, :views
+  attr_accessor :agreed
+  attr_accessible :description, :title, :attachments_attributes, :user_id, :views, :agreed
 
   belongs_to :user
   has_many :attachments, :as => :attachable, :dependent => :destroy

@@ -2,7 +2,15 @@ Mijikai::Application.routes.draw do
   get "user/account"
 
   resources :resources
-  devise_for :user, :path => '', :path_names => { :sign_in => "sign_in", :sign_out => "sign_out", :sign_up => "register" }, :controllers => { :registrations => "users/registrations" }
+
+  #facebook login
+  devise_scope :user do
+     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru' 
+  end
+  #devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+  #end facebook login
+
+  devise_for :user, :path => '', :path_names => { :sign_in => "sign_in", :sign_out => "sign_out", :sign_up => "register" }, :controllers => { :registrations => "users/registrations", :omniauth_callbacks => "users/omniauth_callbacks" }
   #devise_for :users, :controllers => { :registrations => "users/registrations" }
 
   # Allow download of file only to signed in users

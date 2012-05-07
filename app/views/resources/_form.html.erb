@@ -12,7 +12,7 @@
     <%= attachment_form.label :file %>
     <% if !attachment_form.object.file.path.blank? %>
       <% #file_info = get_cache_file_info attachment_form.object.file.path %>
-      <% puts "\n\npath:#{attachment_form.object.file.path}\n" %>
+      <% #puts "\n\npath:#{attachment_form.object.file.path}\n" %>
       <% file_info = get_file_info(attachment_form.object.file.path) %>
       <% #puts "folder:#{file_info[:folder]}" %>
       <% #puts "folder:#{attachment_form.object.file.path.blank?}" %>
@@ -27,5 +27,9 @@
     </p>
   <% end %>
   <%= f.link_to_add "Add attachment", :attachments %>
+  <br/>
+  <br/>
+  <%= f.check_box :agreed%>
+  <span>I have read and agreed to the LessonPouch <%= link_to "Terms of Use", terms_path %>.  I understand and promise not to upload any content that deson't belong to me or infringes on the rights of others.</span>
   <p><%= f.submit %></p>
  <% end %>

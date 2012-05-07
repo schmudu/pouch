@@ -186,7 +186,7 @@ describe ResourcesController do
     end
 
     def valid_attributes params
-      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :attachments_attributes => params}
+      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :agreed => "1", :attachments_attributes => params}
         #{:one => attributes_uploaded_file}
       #}
     end
@@ -241,6 +241,14 @@ describe ResourcesController do
     end
 
     describe "with invalid params" do
+      it "should re-render new page if agreed is not set" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => uploaded_file}).merge({:agreed => 0})}
+          resource = Resource.last
+          response.should render_template('new')
+        end.should_not change(Resource, :count)
+      end
+      
       it "should re-render new page with empty attributes file" do
         lambda do
           post :create, {:resource => valid_attributes({:one => empty_file})}
