@@ -116,9 +116,10 @@ class ResourcesController < ApplicationController
   # PUT /resources/1
   # PUT /resources/1.json
   def update
-#clear nil attachments
+    #clear nil attachments
     @resource = Resource.find(params[:id])
     counter = @resource.attachments.count   #track number of attachments resource will have if we update it
+    resource_changed = false                #track whether or not resource has changed
 
     params[:resource][:attachments_attributes].each do |key, attribute|
       #control structure created because we can't validate the model
@@ -130,6 +131,7 @@ class ResourcesController < ApplicationController
         elsif(attribute[:id].nil?)
           #uploading new file
           counter += 1
+          resource_changed = true
         else
           #file untouched, previously loaded
         end
@@ -140,19 +142,26 @@ class ResourcesController < ApplicationController
         elsif(!attribute[:id].nil?)
           #file previously uploaded and will be removed
           counter += -1
+          resource_changed = true
         else
           #empty file was added and removed
         end
       end
     end
 
+    #check if title/description have changed
+    resource_changed = true if((params[:resource][:title] != @resource.title) || (params[:resource][:description] != @resource.description))
+
+    #TODO: going to need to check for tags and grade level changes
+    
     if(counter<ConstantsHelper::RESOURCE_ATTACHMENTS_MIN_NUM)
       #counter needs to have at least one attachment
       @resource.valid?
       @resource.errors[:attachments] = 'Must provide at least one attachment'
       render 'edit'
     elsif @resource.update_attributes(params[:resource])
-      redirect_to @resource, notice: 'Resource was successfully updated.' 
+      resource_changed ? notice = ConstantsHelper::RESOURCE_UPDATED : notice = ConstantsHelper::RESOURCE_UPDATED_NO_CHANGE
+      redirect_to @resource, notice: notice
     else
       @resource.errors.each do |key, error|
         logger.debug("==DEBUG KEY: #{key} ERROR: #{error}\n")
@@ -173,7 +182,7 @@ class ResourcesController < ApplicationController
     end
   end
 
-  private 
+  private
 
   def is_resource_owner?
     @resource = Resource.find(params[:id])

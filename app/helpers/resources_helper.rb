@@ -29,4 +29,11 @@ module ResourcesHelper
 
     results
   end
+
+  def current_user_owns_resource? resource
+    if(user_signed_in?)
+        return true if current_user.id == resource.user_id
+    end
+    return false
+  end
 end
