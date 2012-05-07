@@ -29,6 +29,7 @@ Mijikai::Application.routes.draw do
   # This route can be invoked with purchase_url(:id => product.id)
   match 'about' => 'pages#about', :as => 'about'
   match 'contact' => 'pages#contact', :as => 'contact'
+  match 'send_contact_mail' => 'pages#send_contact_mail'
   match 'help' => 'pages#help', :as => 'help'
   match 'privacy' => 'pages#privacy', :as => 'privacy'
   match 'terms' => 'pages#terms', :as => 'terms'

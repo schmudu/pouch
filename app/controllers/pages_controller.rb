@@ -1,6 +1,13 @@
 class PagesController < ApplicationController
   def contact
     @title = 'Contact Us'
+
+    #send email
+    #UserMailer.contact_mail.deliver
+  end
+
+  def send_contact_mail
+    render :text => "Going to send email"
   end
 
   def home
