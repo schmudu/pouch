@@ -1,4 +1,6 @@
 Mijikai::Application.routes.draw do
+  get "user/account"
+
   resources :resources
   devise_for :user, :path => '', :path_names => { :sign_in => "sign_in", :sign_out => "sign_out", :sign_up => "register" }, :controllers => { :registrations => "users/registrations" }
   #devise_for :users, :controllers => { :registrations => "users/registrations" }
@@ -23,6 +25,9 @@ Mijikai::Application.routes.draw do
   match 'privacy' => 'pages#privacy', :as => 'privacy'
   match 'terms' => 'pages#terms', :as => 'terms'
   match 'unauthorized' => 'pages#unauthorized', :as => 'unauthorized'
+
+  #user
+  match 'account' => 'user#account', :as => 'account'
   
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
