@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120508022612) do
+ActiveRecord::Schema.define(:version => 20120508204754) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -24,7 +24,19 @@ ActiveRecord::Schema.define(:version => 20120508022612) do
 
   add_index "attachments", ["attachable_id"], :name => "index_attachments_on_attachable_id"
 
-  create_table "members", :force => true do |t|
+  create_table "resources", :force => true do |t|
+    t.string   "description"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+    t.string   "title"
+    t.integer  "user_id"
+    t.integer  "views",       :default => 0
+  end
+
+  add_index "resources", ["user_id"], :name => "index_resources_on_user_id"
+  add_index "resources", ["views"], :name => "index_resources_on_views"
+
+  create_table "test_users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false
     t.string   "encrypted_password",     :default => "", :null => false
     t.string   "reset_password_token"
@@ -39,20 +51,8 @@ ActiveRecord::Schema.define(:version => 20120508022612) do
     t.datetime "updated_at",                             :null => false
   end
 
-  add_index "members", ["email"], :name => "index_members_on_email", :unique => true
-  add_index "members", ["reset_password_token"], :name => "index_members_on_reset_password_token", :unique => true
-
-  create_table "resources", :force => true do |t|
-    t.string   "description"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
-    t.string   "title"
-    t.integer  "user_id"
-    t.integer  "views",       :default => 0
-  end
-
-  add_index "resources", ["user_id"], :name => "index_resources_on_user_id"
-  add_index "resources", ["views"], :name => "index_resources_on_views"
+  add_index "test_users", ["email"], :name => "index_test_users_on_email", :unique => true
+  add_index "test_users", ["reset_password_token"], :name => "index_test_users_on_reset_password_token", :unique => true
 
   create_table "user_attachment_downloads", :force => true do |t|
     t.integer  "user_id"
