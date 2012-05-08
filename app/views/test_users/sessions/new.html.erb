@@ -1,5 +1,10 @@
-<h2>Test User :: Sign in</h2>
+<h2>LessonPouch :: Test User :: Sign in</h2><br/>
+Welcome to LessonPouch testing environment!<br/>
+Just sign in to try out LessonPouch!<br/><br/>
 
+       <p class="notice"><%= notice %></p>
+       <p class="alert"><%= alert %></p>
+       
 <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
   <div><%= f.label "Test User Email" %>
   <%= f.email_field :email %></div>

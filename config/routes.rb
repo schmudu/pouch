@@ -1,6 +1,6 @@
 Mijikai::Application.routes.draw do
   # Only allow test users to sign in and out
-  devise_for :test_users, :only => :sessions
+  devise_for :test_users, :only => :sessions, :controllers => {:sessions => "test_users/sessions"}
 
   get "user/account"
 
