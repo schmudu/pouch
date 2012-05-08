@@ -1,4 +1,6 @@
 Mijikai::Application.routes.draw do
+  devise_for :members
+
   get "user/account"
 
   resources :resources

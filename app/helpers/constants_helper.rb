@@ -1,6 +1,5 @@
 module ConstantsHelper
   #testing
-   TEST_USERS = { "plorenzo" => "myTwin", "rkelly" => "easternSho", "plee" => "shortGuy" }
    TEST_FILE_PATH = File.join(Rails.root, '/test/downloads/hello.txt')
   
   #site wide
