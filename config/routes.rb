@@ -2,7 +2,7 @@ Mijikai::Application.routes.draw do
   # Only allow test users to sign in and out
   devise_for :test_users, :only => :sessions, :controllers => {:sessions => "test_users/sessions"}
 
-  get "user/account"
+  #match "users/account" => "users#account"
 
   resources :resources
 
@@ -39,7 +39,7 @@ Mijikai::Application.routes.draw do
   match 'unauthorized' => 'pages#unauthorized', :as => 'unauthorized'
 
   #user
-  match 'account' => 'user#account', :as => 'account'
+  match 'account' => 'users#account', :as => 'account'
   
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
