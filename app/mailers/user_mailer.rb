@@ -1,7 +1,9 @@
 class UserMailer < ActionMailer::Base
-  default from: "site@lessonpouch.com"
+  default from: "noreply@lessonpouch.com"
+  default to: 'support@lessonpouch.com'
 
-  def contact_mail
-    mail(:to => 'patrick@lessonpouch.com', :subject => 'Contact Email')
+  def contact_mail(subject, message)
+    @message = message
+    mail(:subject => subject)
   end
 end

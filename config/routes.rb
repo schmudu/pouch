@@ -2,8 +2,6 @@ Mijikai::Application.routes.draw do
   # Only allow test users to sign in and out
   devise_for :test_users, :only => :sessions, :controllers => {:sessions => "test_users/sessions"}
 
-  #match "users/account" => "users#account"
-
   resources :resources
 
   #facebook login
@@ -33,6 +31,7 @@ Mijikai::Application.routes.draw do
   match 'about' => 'pages#about', :as => 'about'
   match 'contact' => 'pages#contact', :as => 'contact'
   match 'send_contact_mail' => 'pages#send_contact_mail'
+  match 'mail_sent_confirmation' => 'pages#mail_sent_confirmation', :as => 'mail_sent_confirmation'
   match 'help' => 'pages#help', :as => 'help'
   match 'privacy' => 'pages#privacy', :as => 'privacy'
   match 'terms' => 'pages#terms', :as => 'terms'

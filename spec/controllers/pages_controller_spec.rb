@@ -94,6 +94,42 @@ describe PagesController do
     end
   end
 
+  describe "POST 'send_contact_mail'" do
+    def valid_attributes
+      {:name => "Patrick", :email => "something@something.com", :subject => "Test Subject", :message => "This is my message."}
+    end
+
+    it "should be success" do
+      post 'send_contact_mail', valid_attributes
+      response.should redirect_to mail_sent_confirmation_path
+    end
+
+    it "should be success even if name is nil" do
+      post 'send_contact_mail', valid_attributes.merge({:name => nil})
+      response.should redirect_to mail_sent_confirmation_path
+    end
+
+    it "should be success even if email is nil" do
+      post 'send_contact_mail', valid_attributes.merge({:email => nil})
+      response.should redirect_to mail_sent_confirmation_path
+    end
+
+    it "should re-render mail form if email is the wrong format" do
+      post 'send_contact_mail', valid_attributes.merge({:email => 'laksdjfkl.com'})
+      response.should render_template('contact')
+    end
+
+    it "should re-render mail form if subject is nil" do
+      post 'send_contact_mail', valid_attributes.merge({:subject => nil})
+      response.should render_template('contact')
+    end
+
+    it "should re-render mail form if message is nil" do
+      post 'send_contact_mail', valid_attributes.merge({:message => nil})
+      response.should render_template('contact')
+    end
+  end
+
 =begin
   describe "GET 'not_found'" do
     it "returns http success" do

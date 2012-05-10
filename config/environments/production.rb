@@ -81,7 +81,7 @@ Mijikai::Application.configure do
     :port               => 587,
     :domain             => 'gmail.com', #you can also use google.com
     :authentication     => :plain,
-    :user_name          => 'patrick@lessonpouch.com',
+    :user_name          => 'noreply@lessonpouch.com',
     :password           => 'hiC$99Cup'
   }
 end
