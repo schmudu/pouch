@@ -28,14 +28,16 @@ Mijikai::Application.routes.draw do
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
-  match 'about' => 'pages#about', :as => 'about'
-  match 'contact' => 'pages#contact', :as => 'contact'
-  match 'send_contact_mail' => 'pages#send_contact_mail'
-  match 'mail_sent_confirmation' => 'pages#mail_sent_confirmation', :as => 'mail_sent_confirmation'
-  match 'help' => 'pages#help', :as => 'help'
-  match 'privacy' => 'pages#privacy', :as => 'privacy'
-  match 'terms' => 'pages#terms', :as => 'terms'
-  match 'unauthorized' => 'pages#unauthorized', :as => 'unauthorized'
+  scope :controller => :pages do
+    match 'about' => :about, :as => 'about'
+    match 'contact' => :contact, :as => 'contact'
+    match 'send_contact_mail' => :send_contact_mail
+    match 'mail_sent_confirmation' => :mail_sent_confirmation, :as => 'mail_sent_confirmation'
+    match 'help' => :help, :as => 'help'
+    match 'privacy' => :privacy, :as => 'privacy'
+    match 'terms' => :terms, :as => 'terms'
+    match 'unauthorized' => :unauthorized, :as => 'unauthorized'
+  end
 
   #user
   match 'account' => 'users#account', :as => 'account'

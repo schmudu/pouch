@@ -4,6 +4,6 @@ class UserMailer < ActionMailer::Base
 
   def contact_mail(subject, message)
     @message = message
-    mail(:subject => subject)
+    mail(:subject => "Message From Site :: #{subject}")
   end
 end
