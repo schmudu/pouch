@@ -1,0 +1,11 @@
+LessonPouch is coming soon.<br/>
+<br/>
+Enter your email here and we'll send you an email when it goes live:<br/>
+<% unless flash[:error].nil? %>
+  <br/><%= flash[:error] %><br/>
+<% end %>
+<%= form_tag('/submit_email_coming_soon', :method => "get") do %>
+  <%= label_tag(:email, "Email:") %>
+  <%= text_field_tag(:email) %><br/>
+  <%= submit_tag("Let me know!") %><br/>
+<% end %>
