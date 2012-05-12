@@ -1,5 +1,4 @@
 Mijikai::Application.routes.draw do
-=begin
   # Only allow test users to sign in and out
   devise_for :test_users, :only => :sessions, :controllers => {:sessions => "test_users/sessions"}
 
@@ -85,7 +84,7 @@ Mijikai::Application.routes.draw do
 
   match '*something' => 'pages#not_found'
 
-=end
+=begin
   #COMING SOON 
   #match '*something', :to => redirect('/coming_soon.html')
   #root :to => redirect('/coming_soon.html')
@@ -93,7 +92,12 @@ Mijikai::Application.routes.draw do
   match 'submit_email_coming_soon' => 'pages#submit_email_coming_soon'
   match '*something' => 'pages#coming_soon'
   root :to => 'pages#coming_soon'
-
+=end
+=begin
+  #MAINTENANCE
+  match '*something', :to => redirect('/maintenance.html')
+  root :to => redirect('/maintentance.html')
+=end
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
