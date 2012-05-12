@@ -29,6 +29,8 @@ class PagesController < ApplicationController
       if @first_user.save
         redirect_to coming_soon_confirmation_path
         return
+      else
+        flash.now[:error] = t('errors.messages.coming_soon.email_already_signed_up')
       end
     end
     render 'coming_soon', :layout => false

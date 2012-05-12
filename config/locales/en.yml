@@ -26,6 +26,8 @@ en:
     name: "LessonPouch"
   errors:
     messages:
+      coming_soon:
+        email_already_signed_up: "That address has already been signed up.  Our team is working hard to get it up and running for the teachers."
       email_wrong_format: "The email address entered seems to be incorrect"
       email_not_provided: "No email was provided"
       wrong_size: "is the wrong size (should be %{file_size})"
