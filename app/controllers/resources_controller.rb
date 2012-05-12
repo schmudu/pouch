@@ -162,7 +162,7 @@ class ResourcesController < ApplicationController
       @resource.errors[:attachments] = 'Must provide at least one attachment'
       render 'edit'
     elsif @resource.update_attributes(params[:resource])
-      resource_changed ? notice = ConstantsHelper::RESOURCE_UPDATED : notice = ConstantsHelper::RESOURCE_UPDATED_NO_CHANGE
+      resource_changed ? notice = t('resources.updated') : notice = t('resources.no_change')
       redirect_to @resource, notice: notice
     else
       @resource.errors.each do |key, error|

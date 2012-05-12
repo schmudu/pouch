@@ -2,6 +2,28 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  accounts: 
+    links: "My Account"
+  contact:
+    links: "Contact"
+  how_it_works:
+    title: "How It Works"
+  links:
+    share_resource: "Share Resource" 
+    terms: "Terms of Use"
+    privacy: "Privacy"
+    contact: "Contact"
+    about: "About"
+  resources:
+    browse: "Browse"
+    links: "Share Resource"
+    no_change: "No update to the resource was made"
+    updated: "Resource was updated"
+  sessions:
+    sign_in: "Sign In" 
+    sign_out: "Sign Out" 
+  site:
+    name: "LessonPouch"
   errors:
     messages:
       wrong_size: "is the wrong size (should be %{file_size})"

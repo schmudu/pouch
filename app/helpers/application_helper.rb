@@ -1,5 +1,5 @@
 module ApplicationHelper
   def title
-    @title.nil? ? "#{ConstantsHelper::WEB_SITE_NAME}" : "#{ConstantsHelper::WEB_SITE_NAME} | #{@title}"
+    @title.nil? ? "#{t 'site.name'}" : "#{t 'site.name'} | #{@title}"
   end
 end

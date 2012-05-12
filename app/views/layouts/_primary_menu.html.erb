@@ -1,12 +1,12 @@
 <ul id="primary_menu">
   <li><%= link_to("Home", root_path) %></li>
-  <li><%= link_to(ConstantsHelper::LINK_SHARE_RESOURCE_MAIN, new_resource_path) %></li>
-  <li><%= link_to(ConstantsHelper::LINK_BROWSE_RESOURCE_MAIN , resources_path) %></li>
+  <li><%= link_to(t('resources.links'), new_resource_path) %></li>
+  <li><%= link_to(t('resources.browse'), resources_path) %></li>
   <% if user_signed_in? %>
-    <li><%= link_to(ConstantsHelper::LINK_MY_ACCOUNT, account_path) %></li>
-    <li><%= link_to(ConstantsHelper::LINK_SIGN_OUT, destroy_user_session_path, :method => :delete) %></li>
+    <li><%= link_to(t('accounts.links'), account_path) %></li>
+    <li><%= link_to(t('sessions.sign_out'), destroy_user_session_path, :method => :delete) %></li>
   <% else %>
-    <li><%= link_to(ConstantsHelper::LINK_SIGN_IN, new_user_session_path) %></li>
+    <li><%= link_to(t('sessions.sign_in'), new_user_session_path) %></li>
   <% end %>
   </li>
 </ul>

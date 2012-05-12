@@ -16,7 +16,7 @@ describe PagesController do
         login_user
         
         get 'home'
-        response.should have_selector('body', :content => 'My Account')
+        response.should have_selector('body', :content => "#{I18n.t 'accounts.links'}")
     end
 
     it "should have sign out link if signed in" do
@@ -26,7 +26,7 @@ describe PagesController do
         login_user
 
         get 'home'
-        response.should have_selector('body', :content => ConstantsHelper::LINK_SIGN_OUT)
+        response.should have_selector('body', :content => "#{I18n.t 'sessions.sign_out'}")
     end
 
     it "should have sign in link if user signed out" do
@@ -35,27 +35,27 @@ describe PagesController do
         controller.stub :current_user => nil
 
         get 'home'
-        response.should have_selector('body', :content => ConstantsHelper::LINK_SIGN_IN)
+        response.should have_selector('body', :content => "#{I18n.t 'sessions.sign_in'}")
     end
 
     it "should have an terms link in the footer" do
         get 'home'
-        response.should have_selector('ul', :content => 'Terms of Use')
+        response.should have_selector('ul', :content => "#{I18n.t 'links.terms'}")
     end
 
     it "should have an privacy link in the footer" do
         get 'home'
-        response.should have_selector('ul', :content => 'Privacy')
+        response.should have_selector('ul', :content => "#{I18n.t 'links.privacy'}")
     end
 
     it "should have an contact link in the footer" do
         get 'home'
-        response.should have_selector('ul', :content => 'Contact')
+        response.should have_selector('ul', :content => "#{I18n.t 'contact.links'}")
     end
 
     it "should have an about link in the footer" do
         get 'home'
-        response.should have_selector('ul', :content => 'About')
+        response.should have_selector('ul', :content => "#{I18n.t 'links.about'}")
     end
   end
 
