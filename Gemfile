@@ -13,6 +13,7 @@ gem 'fog', '~> 1.3.1'
 gem 'certified'
 gem 'nested_form', :git => "git://github.com/ryanb/nested_form.git"
 gem 'omniauth-facebook'
+gem 'tire'
 
 group :production do
   gem 'pg'
