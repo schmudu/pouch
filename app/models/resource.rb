@@ -13,6 +13,16 @@ class Resource < ActiveRecord::Base
 
   accepts_nested_attributes_for :attachments, :allow_destroy => true
 
+
+  mapping do
+    indexes :id, type: 'integer'
+    indexes :title
+    indexes :description
+    indexes :user_id, type: 'integer'
+    indexes :author
+    indexes :attachment_count, type: 'integer'
+  end
+
   #before_create :clear_nil_attachments
   validates_presence_of :user_id
   validates_presence_of :description, :message => "Resource must have a description"
@@ -20,9 +30,29 @@ class Resource < ActiveRecord::Base
   #validates_with ResourceValidator
 
   def self.search(params)
-    tire.search(load: true) do
-      query { string params[:query]} if params[:query].present?
+    tire.search(page: params[:page], per_page: 2) do |s|
+      s.query { string params[:query], default_operator: "AND"} if params[:query].present?
+      s.filter :term, user_id: params[:user_id] if params[:user_id].present?
+      s.sort {by :title, "asc"} if params[:query].blank?
+      s.facet "authors" do
+        terms :user_id
+      end
+
+      #debugging
+      #raise s.to_curl
     end
+  end
+
+  def to_indexed_json
+    to_json(methods: [:author, :attachment_count])
+  end
+
+  def author
+    user.screen_name
+  end
+
+  def attachment_count
+    attachments.length
   end
 =begin
   def clear_nil_attachments

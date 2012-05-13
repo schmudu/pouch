@@ -4,22 +4,45 @@
     <%= submit_tag "Search", name: nil %>
   </p>
 <% end %>
+
+<div id="facets">
+  <h3>Authors</h3>
+  <ul>
+    <% @resources.facets['authors']['terms'].each do |facet| %>
+      <li>
+        <%= link_to_unless_current User.find(facet['term']).screen_name, params.merge(user_id: facet['term']) %>
+        <% if params[:user_id] == facet['term'].to_s %>
+          (<%= link_to "remove", user_id: nil %>)
+        <% else %>
+          (<%= facet['count'] %>)
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+
+
+
 <h1>Listing resources</h1>
 
 <table>
   <tr>
     <th>Title</th>
     <th>Description</th>
+    <th>Author</th>
+    <th>Attachments</th>
   </tr>
 
 <% @resources.each do |resource| %>
   <tr>
     <td><%= link_to(resource.title, resource) %></td>
     <td><%= resource.description %></td>
+    <td><%= resource.author %></td>
+    <td><%= resource.attachment_count %></td>
   </tr>
 <% end %>
 </table>
 
-<br />
 
-<%= link_to 'New Resource', new_resource_path %>
+<%= will_paginate @resources %>
