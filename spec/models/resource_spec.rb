@@ -20,6 +20,20 @@ describe Resource do
     end
   end
 
+  describe "topics" do
+    it "should respond to resource_topics" do 
+      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
+      resource.should respond_to(:topics)
+    end
+  end
+
+  describe "resource_topics" do
+    it "should respond to resource_topics" do 
+      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
+      resource.should respond_to(:resource_topics)
+    end
+  end
+
   describe "user id" do
     it "should be valid with user id submitted" do 
       resource = FactoryGirl.build(:resource, :user_id => @user.id)

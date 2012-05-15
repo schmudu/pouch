@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120512034823) do
+ActiveRecord::Schema.define(:version => 20120515003216) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -31,6 +31,13 @@ ActiveRecord::Schema.define(:version => 20120512034823) do
   end
 
   add_index "first_users", ["email"], :name => "index_first_users_on_email", :unique => true
+
+  create_table "resource_topics", :force => true do |t|
+    t.integer  "resource_id"
+    t.integer  "topic_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "resources", :force => true do |t|
     t.string   "description"
@@ -61,6 +68,14 @@ ActiveRecord::Schema.define(:version => 20120512034823) do
 
   add_index "test_users", ["email"], :name => "index_test_users_on_email", :unique => true
   add_index "test_users", ["reset_password_token"], :name => "index_test_users_on_reset_password_token", :unique => true
+
+  create_table "topics", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "topics", ["name"], :name => "index_topics_on_name", :unique => true
 
   create_table "user_attachment_downloads", :force => true do |t|
     t.integer  "user_id"

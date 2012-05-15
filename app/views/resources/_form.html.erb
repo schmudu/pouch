@@ -7,6 +7,10 @@
   <%= f.label :description %><br />
   <%= f.text_area :description %>
   </p>
+  <p>
+  <%= f.label :topic_tokens, "Tokens" %><br />
+  <%= f.text_field :topic_tokens %>
+  </p>
   <%= f.fields_for :attachments do |attachment_form|  %>
     <p>
     <%= attachment_form.label :file %>

@@ -3,6 +3,7 @@ Mijikai::Application.routes.draw do
   devise_for :test_users, :only => :sessions, :controllers => {:sessions => "test_users/sessions"}
 
   resources :resources
+  resources :topics, :only => [:index]
 
   #facebook login
   devise_scope :user do
@@ -42,6 +43,8 @@ Mijikai::Application.routes.draw do
   #user
   match 'account' => 'users#account', :as => 'account'
   
+  #topic
+  #match '/topics' => 'topics#index', :as => 'topics'
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 

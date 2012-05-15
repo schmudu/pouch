@@ -5,13 +5,16 @@ class Resource < ActiveRecord::Base
 
   #Note: Because we are using nested form, we can not add any validators to the attachments attribute
   attr_accessor :agreed
-  attr_accessible :description, :title, :attachments_attributes, :user_id, :views, :agreed
+  attr_accessible :description, :title, :attachments_attributes, :user_id, :views, :agreed, :topic_tokens
 
   belongs_to :user
   has_many :attachments, :as => :attachable, :dependent => :destroy
   has_many :user_resource_views
+  has_many :resource_topics
+  has_many :topics, through: :resource_topics
 
   accepts_nested_attributes_for :attachments, :allow_destroy => true
+  attr_reader :topic_tokens
 
 
   mapping do
@@ -28,6 +31,11 @@ class Resource < ActiveRecord::Base
   validates_presence_of :description, :message => "Resource must have a description"
   validates_presence_of :title, :message => "Resource must have a title"
   #validates_with ResourceValidator
+
+  def topic_tokens=(tokens)
+    #self.topic_ids = ids.split(",")
+    self.topic_ids = Topic.ids_from_tokens(tokens)
+  end
 
   def self.search(params)
     tire.search(page: params[:page], per_page: 2) do |s|
@@ -52,7 +60,7 @@ class Resource < ActiveRecord::Base
   end
 
   def attachment_count
-    attachments.length
+    attachments.count
   end
 =begin
   def clear_nil_attachments

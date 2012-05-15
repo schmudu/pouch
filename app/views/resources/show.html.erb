@@ -18,6 +18,15 @@
   <% end %>
 </ul>
 
+<h3>Topics</h3>
+<ul>
+  <% for topic in @resource.topics %>
+    <li>
+      <%= topic.name %>
+    </li>
+  <% end %>
+</ul>
+
 <% if current_user_owns_resource?(@resource) %>
   <%= link_to 'Edit', edit_resource_path(@resource) %> |
 <% end %>

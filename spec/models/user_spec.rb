@@ -70,9 +70,14 @@ describe User do
     end
 
     it "should respond to resources" do
-      Resource.any_instance.stub_chain(:attachments, :empty?).and_return(false)
       user = FactoryGirl.create(:user)
+      #attachment_one = FactoryGirl.create(:attachment)
+      #attachment_two = FactoryGirl.create(:attachment)
+      #resource = FactoryGirl.build(:resource, :user_id => user.id, :attachments => [attachment_one, attachment_two])
+      Resource.any_instance.stub_chain(:attachments, :empty?).and_return(false)
+      Resource.any_instance.stub(:attachment_count).and_return(2)
       lambda do
+        #resource = FactoryGirl.build(:resource, :user_id => user.id, :attachments => [attachment_one, attachment_two])
         resource = FactoryGirl.create(:resource, :user_id => user.id)
       end.should change(user.resources, :count).from(0).to(1)
     end
