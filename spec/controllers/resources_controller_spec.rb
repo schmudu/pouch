@@ -425,6 +425,32 @@ describe ResourcesController do
       response.should redirect_to(unauthorized_path)
     end
   end
+
+  describe "search" do
+    before(:each) do
+      Resource.tire.index.delete
+      Resource.tire.create_elasticsearch_index
+      @user = FactoryGirl.create(:user)
+      @user.confirm!
+      attachment_one = FactoryGirl.create(:attachment)
+      attachment_two = FactoryGirl.create(:attachment)
+      resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+      resource = FactoryGirl.create(:resource, :title => 'Patrick Random Worksheet', :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+      Resource.index.refresh
+    end
+
+    def params
+      {:query => "random"}
+    end
+
+    it "should return an array of resources" do
+      search = Resource.tire.search(params)
+      puts "\n\n===count: #{search.results.count} resources: #{search}\n"
+      puts "search: #{search.to_json}"
+      #puts "===resource: #{resources.first} title: #{resources.first.title} description: #{resources.first.description}"
+      search.results.should_not be_empty
+    end
+  end
 =begin
   # This should return the minimal set of attributes required to create a valid
   # Resource. As you add validations to Resource, be sure to

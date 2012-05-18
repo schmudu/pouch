@@ -26,6 +26,7 @@ class ResourcesController < ApplicationController
   # GET /resources
   # GET /resources.json
   def index
+    logger.debug("\n\n====index: params: #{params}\n")
 
     @resources = Resource.search(params)
 
