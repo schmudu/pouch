@@ -427,6 +427,10 @@ describe ResourcesController do
   end
 
   describe "search" do
+    before(:all) do
+      Resource.index_name("test_#{Resource.model_name.plural}")
+    end
+
     before(:each) do
       Resource.tire.index.delete
       Resource.tire.create_elasticsearch_index
