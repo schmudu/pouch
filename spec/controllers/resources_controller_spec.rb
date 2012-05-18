@@ -427,6 +427,10 @@ describe ResourcesController do
   end
 
   describe "search" do
+    after(:all) do
+      Resource.tire.index.delete
+    end
+
     before(:all) do
       Resource.index_name("test_#{Resource.model_name.plural}")
     end
