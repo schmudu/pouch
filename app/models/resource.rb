@@ -20,7 +20,7 @@ class Resource < ActiveRecord::Base
 
   mapping do
     indexes :id, type: 'integer', :index => :not_analyzed, :include_in_all => false
-    indexes :title, :analyzer => 'snowball'
+    indexes :title, :analyzer => 'snowball', :index => :not_analyzed
     indexes :description, :analyzer => 'snowball'
     indexes :user_id, type: 'integer', :index => :not_analyzed
     indexes :author, :analyzer => 'keyword'
