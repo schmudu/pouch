@@ -1,4 +1,5 @@
 Mijikai::Application.routes.draw do
+=begin
   # Only allow test users to sign in and out
   devise_for :test_users, :only => :sessions, :controllers => {:sessions => "test_users/sessions"}
 
@@ -86,8 +87,7 @@ Mijikai::Application.routes.draw do
   root :to => 'pages#home'
 
   match '*something' => 'pages#not_found'
-
-=begin
+=end
   #COMING SOON 
   #match '*something', :to => redirect('/coming_soon.html')
   #root :to => redirect('/coming_soon.html')
