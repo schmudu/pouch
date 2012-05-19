@@ -19,11 +19,11 @@ class Resource < ActiveRecord::Base
 
 
   mapping do
-    indexes :id, type: 'integer'
-    indexes :title
-    indexes :description
-    indexes :user_id, type: 'integer'
-    indexes :author
+    indexes :id, type: 'integer', :index => :not_analyzed, :include_in_all => false
+    indexes :title, :analyzer => 'snowball'
+    indexes :description, :analyzer => 'snowball'
+    indexes :user_id, type: 'integer', :index => :not_analyzed
+    indexes :author, :analyzer => 'keyword'
     indexes :attachment_count, type: 'integer'
   end
 
