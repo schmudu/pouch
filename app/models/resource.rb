@@ -42,7 +42,7 @@ class Resource < ActiveRecord::Base
     tire.search(page: params[:page], per_page: 2) do |s|
       s.query { string params[:query], default_operator: "AND"} if params[:query].present?
       s.filter :term, user_id: params[:user_id] if params[:user_id].present?
-      s.sort {by :title, "asc"} if params[:query].blank?
+      #s.sort {by :title, "asc"} if params[:query].blank?
       s.facet "authors" do
         terms :user_id
       end
