@@ -2,6 +2,7 @@ class Resource < ActiveRecord::Base
   #Tire gem
   include Tire::Model::Search
   include Tire::Model::Callbacks
+  index_name BONSAI_INDEX_NAME
 
   #Note: Because we are using nested form, we can not add any validators to the attachments attribute
   attr_accessor :agreed
