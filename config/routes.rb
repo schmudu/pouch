@@ -95,7 +95,6 @@ Mijikai::Application.routes.draw do
   match 'submit_email_coming_soon' => 'pages#submit_email_coming_soon'
   match '*something' => 'pages#coming_soon'
   root :to => 'pages#coming_soon'
-=end
 =begin
   #MAINTENANCE
   match '*something', :to => redirect('/maintenance.html')
