@@ -1,5 +1,6 @@
 class Resource < ActiveRecord::Base
   #Tire gem
+  include ConstantsHelper
   include Tire::Model::Search
   include Tire::Model::Callbacks
   index_name BONSAI_INDEX_NAME
@@ -72,17 +73,21 @@ class Resource < ActiveRecord::Base
     puts "\n\nextracting content....\n"
     content = []
     attachments.each do |attachment|
-      if attachment.file.extension == 'pdf'
-    puts "it's a pdf\n"
+      if attachment.file.extension == FILE_EXTENSION_PDF
         reader = PDF::Reader.new(attachment.file.current_path)
         reader.pages.each do |page|
-    puts "content: #{page.text}\n"
           content << page.text
         end
+      elsif attachment.file.extension == FILE_EXTENSION_TXT
+        f = File.open(attachment.file.current_path).each do |line|
+          line.strip!
+          content << line
+        end
+        f.close
       end
     end
     puts "final content: #{content.join(' ')}\n\n"
-    self.extracted_content = content.join(" ")
+    self.extracted_content = content.join(" ") unless content.empty?
   end
 =begin
   def clear_nil_attachments
