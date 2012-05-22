@@ -3,7 +3,7 @@ module ConstantsHelper
   FILE_EXTENSION_TXT            = 'txt'
   FILE_EXTENSION_PDF            = 'pdf'
   #testing
-  TEST_FILE_PATH                = File.join(Rails.root, '/test/downloads/hello.txt')
+  TEST_FILE_PATH                = File.join(Rails.root, '/test/downloads/sample_one.txt')
   
   #links
   #ip gateway

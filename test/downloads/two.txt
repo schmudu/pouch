@@ -1,3 +1,0 @@
-This is the second text file.
-This also has a newline.  
-Hopefully there are no problems with it.

@@ -70,14 +70,14 @@ class Resource < ActiveRecord::Base
   private
 
   def extract_content
-    puts "\n\nextracting content....\n"
+    #puts "\n\nextracting content....\n"
     content = []
     attachments.each do |attachment|
       yomu = Yomu.new "#{attachment.file.current_path}"
-      doc_content = yomu.text
+      doc_content = yomu.text.strip
       content << doc_content
     end
-    puts "final content: #{content.join(' ')}\n\n"
+    #puts "final content: #{content.join(' ')}\n\n"
     self.extracted_content = content.join(" ") unless content.empty?
   end
 =begin
