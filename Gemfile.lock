@@ -202,6 +202,7 @@ GEM
       rack (>= 1.0)
       rack-test (>= 0.5.3)
     will_paginate (3.0.3)
+    yomu (0.1.1)
 
 PLATFORMS
   ruby
@@ -230,3 +231,4 @@ DEPENDENCIES
   uglifier (>= 1.0.3)
   webrat (= 0.7.1)
   will_paginate
+  yomu

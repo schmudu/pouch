@@ -73,18 +73,9 @@ class Resource < ActiveRecord::Base
     puts "\n\nextracting content....\n"
     content = []
     attachments.each do |attachment|
-      if attachment.file.extension == FILE_EXTENSION_PDF
-        reader = PDF::Reader.new(attachment.file.current_path)
-        reader.pages.each do |page|
-          content << page.text
-        end
-      elsif attachment.file.extension == FILE_EXTENSION_TXT
-        f = File.open(attachment.file.current_path).each do |line|
-          line.strip!
-          content << line
-        end
-        f.close
-      end
+      yomu = Yomu.new "#{attachment.file.current_path}"
+      doc_content = yomu.text
+      content << doc_content
     end
     puts "final content: #{content.join(' ')}\n\n"
     self.extracted_content = content.join(" ") unless content.empty?
