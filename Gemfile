@@ -14,6 +14,7 @@ gem 'certified'
 gem 'nested_form', :git => "git://github.com/ryanb/nested_form.git"
 gem 'omniauth-facebook'
 gem 'yomu'
+gem 'tire'
 
 group :production do
   gem 'pg'
