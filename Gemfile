@@ -13,8 +13,6 @@ gem 'fog', '~> 1.3.1'
 gem 'certified'
 gem 'nested_form', :git => "git://github.com/ryanb/nested_form.git"
 gem 'omniauth-facebook'
-gem 'tire'
-gem 'pdf-reader'
 gem 'yomu'
 
 group :production do
@@ -39,8 +37,8 @@ group :test, :development do
   gem "autotest-growl"
   gem "autotest-fsevent"
   gem "webrat", "0.7.1"
-  gem "factory_girl_rails"
 end
+gem "factory_girl_rails"
 
 gem 'jquery-rails'
 gem 'will_paginate'
