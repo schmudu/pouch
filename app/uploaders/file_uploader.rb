@@ -35,6 +35,12 @@ class FileUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   
+  def extension
+    extension_index = current_path.downcase =~ /\.[a-z]+\Z/
+    extension = current_path[(extension_index + 1)..current_path.length]
+    extension
+  end
+
   def store_dir
     "#{Rails.root}/uploads/#{model.id}"
     #File.join(Rails.root, '/uploads/', model.id)

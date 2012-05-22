@@ -18,13 +18,15 @@ class Resource < ActiveRecord::Base
   attr_reader :topic_tokens
 
 
+  before_save :extract_content
+
   mapping do
     indexes :id, type: 'integer', :index => :not_analyzed, :include_in_all => false
     indexes :title, type: 'string', :analyzer => 'snowball', :index => :not_analyzed
     indexes :description, type: 'string', :analyzer => 'snowball'
-    indexes :user_id, type: 'integer', :index => :not_analyzed
+    #indexes :user_id, type: 'integer', :index => :not_analyzed
     indexes :author, :analyzer => 'keyword'
-    indexes :attachment_count, type: 'integer'
+    #indexes :attachment_count, type: 'integer'
   end
 
   #before_create :clear_nil_attachments
@@ -39,7 +41,7 @@ class Resource < ActiveRecord::Base
   end
 
   def self.search(params)
-    tire.search(page: params[:page], per_page: 2) do |s|
+    tire.search(page: params[:page], per_page: 15) do |s|
       s.query { string params[:query], default_operator: "AND"} if params[:query].present?
       s.filter :term, user_id: params[:user_id] if params[:user_id].present?
       #s.sort {by :title, "asc"} if params[:query].blank?
@@ -62,6 +64,25 @@ class Resource < ActiveRecord::Base
 
   def attachment_count
     attachments.count
+  end
+
+  private
+
+  def extract_content
+    puts "\n\nextracting content....\n"
+    content = []
+    attachments.each do |attachment|
+      if attachment.file.extension == 'pdf'
+    puts "it's a pdf\n"
+        reader = PDF::Reader.new(attachment.file.current_path)
+        reader.pages.each do |page|
+    puts "content: #{page.text}\n"
+          content << page.text
+        end
+      end
+    end
+    puts "final content: #{content.join(' ')}\n\n"
+    self.extracted_content = content.join(" ")
   end
 =begin
   def clear_nil_attachments

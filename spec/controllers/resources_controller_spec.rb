@@ -458,6 +458,14 @@ describe ResourcesController do
       #puts "===resource: #{resources.first} title: #{resources.first.title} description: #{resources.first.description}"
       search.results.should_not be_empty
     end
+
+    it "should return a result even if not an exact match" do
+      search = Resource.tire.search({:query => 'ran'})
+      puts "\n\n===count: #{search.results.count} resources: #{search}\n"
+      puts "search: #{search.to_json}"
+      #puts "===resource: #{resources.first} title: #{resources.first.title} description: #{resources.first.description}"
+      search.results.should_not be_empty
+    end
   end
 =begin
   # This should return the minimal set of attributes required to create a valid

@@ -62,4 +62,31 @@ describe Resource do
       resource.should respond_to(:views)
     end
   end
+
+  describe "extracted_content" do
+    before(:each) do
+      @attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/hello.pdf')), 'pdf'))
+      @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one])
+    end
+
+    it "should respond to extracted_content" do
+      @resource.should respond_to(:extracted_content)
+    end
+
+    it "should not be empty if a pdf is submitted" do
+      @resource.extracted_content.should_not be_nil
+    end
+
+    it "should append all the content into extracted content if multiple files are submitted" do
+      attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/hello.pdf')), 'pdf'))
+      attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/one.pdf')), 'pdf'))
+      resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+      puts "\n\n====resource: attachments: #{@resource.extracted_content}\n"
+      #text from file one
+      resource.extracted_content.should match /sample/
+
+      #text from file two
+      resource.extracted_content.should match /one/
+    end
+  end
 end
