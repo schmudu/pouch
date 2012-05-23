@@ -1,7 +1,10 @@
 module ConstantsHelper
   #files
   FILE_EXTENSION_TXT            = 'txt'
+  FILE_EXTENSION_RTF            = 'rtf'
   FILE_EXTENSION_PDF            = 'pdf'
+  FILE_EXTENSION_DOC            = 'doc'
+  FILE_EXTENSION_DOCX           = 'docx'
   #testing
   TEST_FILE_PATH                = File.join(Rails.root, '/test/downloads/sample_one.txt')
   
