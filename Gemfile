@@ -18,6 +18,7 @@ gem 'tire'
 gem 'msworddoc-extractor', :git =>
   'git://github.com/dayflower/msworddoc-extractor.git'
 gem 'hypodermic'
+gem 'ruby-rtf'
 
 group :production do
   gem 'pg'

@@ -82,6 +82,9 @@ class Resource < ActiveRecord::Base
         doc = MSWordDoc::Extractor.load(attachment.file.current_path)
         content << doc.whole_contents   # doc is MSWordDoc::Essence
         doc.close() 
+      elsif attachment.file.extension == FILE_EXTENSION_RTF
+        doc = RubyRTF::Parser.new.parse(File.open(attachment.file.current_path).read)
+        doc.sections.each{|section| content << section[:text]}
       elsif attachment.file.extension == FILE_EXTENSION_DOCX
         #doc, thumbnail = Hypodermic.extract('path/to/document', :thumbnail => true)
         content <<  Hypodermic.extract(attachment.file.current_path)

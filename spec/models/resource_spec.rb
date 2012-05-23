@@ -91,6 +91,28 @@ describe Resource do
       end
     end
 
+    describe "with a rtf file" do
+      before(:each) do
+        @attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.rtf')), 'rtf'))
+        @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one])
+      end
+
+      it "extracted_content should not be nil" do
+        @resource.extracted_content.should_not be_nil
+      end
+
+      it "should append all the content into extracted content if multiple files are submitted" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.rtf')), 'rtf'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.rtf')), 'rtf'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        #text from file one
+        resource.extracted_content.should match /first/
+
+        #text from file two
+        resource.extracted_content.should match /second/
+      end
+    end
+
     describe "with a txt file" do
       before(:each) do
         @attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.txt')), 'txt'))
