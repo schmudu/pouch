@@ -74,10 +74,17 @@ class Resource < ActiveRecord::Base
     content = []
     attachments.each do |attachment|
       if attachment.file.extension == FILE_EXTENSION_PDF
-        reader = PDF::Reader.new(attachment.file.current_path)
+        reader = PDF::Reader.new(attachment.file.current_path, 'rb')
         reader.pages.each do |page|
           content << page.text
         end
+      elsif attachment.file.extension == FILE_EXTENSION_DOC
+        doc = MSWordDoc::Extractor.load(attachment.file.current_path)
+        content << doc.whole_contents   # doc is MSWordDoc::Essence
+        doc.close() 
+      elsif attachment.file.extension == FILE_EXTENSION_DOCX
+        #doc, thumbnail = Hypodermic.extract('path/to/document', :thumbnail => true)
+        content <<  Hypodermic.extract(attachment.file.current_path)
       elsif attachment.file.extension == FILE_EXTENSION_TXT
         f = File.open(attachment.file.current_path).each do |line|
           line.strip!
@@ -91,7 +98,7 @@ class Resource < ActiveRecord::Base
       content << doc_content
 =end
     end
-    #puts "final content: #{content.join(' ')}\n\n"
+    puts "====length: #{content.join(' ').length} final content: #{content.join(' ')}\n"
     self.extracted_content = content.join(" ") unless content.empty?
   end
 =begin

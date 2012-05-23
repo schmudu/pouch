@@ -66,7 +66,7 @@ describe Resource do
   describe "extracted_content" do
     describe "with a pdf file" do
       before(:each) do
-        @attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'pdf'))
+        @attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'txt'))
         @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one])
       end
 
@@ -79,10 +79,11 @@ describe Resource do
       end
 
       it "should append all the content into extracted content if multiple files are submitted" do
-        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'pdf'))
-        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.pdf')), 'pdf'))
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.pdf')), 'txt'))
         resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
         #text from file one
+        puts "content: #{resource.extracted_content} match:#{resource.extracted_content.index('first')}"
         resource.extracted_content.should match /first/
 
         #text from file two
