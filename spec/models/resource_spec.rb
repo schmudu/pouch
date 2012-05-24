@@ -66,7 +66,7 @@ describe Resource do
   describe "extracted_content" do
     describe "with a pdf file" do
       before(:each) do
-        @attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'txt'))
+        @attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'pdf'))
         @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one])
       end
 
@@ -79,8 +79,8 @@ describe Resource do
       end
 
       it "should append all the content into extracted content if multiple files are submitted" do
-        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'txt'))
-        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.pdf')), 'txt'))
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'pdf'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.pdf')), 'pdf'))
         resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
         #text from file one
         puts "content: #{resource.extracted_content} match:#{resource.extracted_content.index('first')}"
@@ -176,6 +176,88 @@ describe Resource do
 
         #text from file two
         resource.extracted_content.should match /second/
+      end
+    end
+
+    describe "with a mix of file atttachments" do
+      it "one txt and one pdf" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.txt')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.pdf')), 'pdf'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /txt/
+        resource.extracted_content.should match /pdf/
+      end
+      
+      it "one txt and one doc" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.txt')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.doc')), 'doc'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /txt/
+        resource.extracted_content.should match /doc/
+      end
+      
+      it "one txt and one docx" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.txt')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.docx')), 'docx'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /txt/
+        resource.extracted_content.should match /docx/
+      end
+      
+      it "one txt and one rtf" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.txt')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.rtf')), 'rtf'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /txt/
+        resource.extracted_content.should match /rtf/
+      end
+
+      it "one rtf and one pdf" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.rtf')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.pdf')), 'pdf'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /rtf/
+        resource.extracted_content.should match /pdf/
+      end
+
+      it "one rtf and one doc" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.rtf')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.doc')), 'doc'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /rtf/
+        resource.extracted_content.should match /doc/
+      end
+
+      it "one rtf and one docx" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.rtf')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.docx')), 'docx'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /rtf/
+        resource.extracted_content.should match /docx/
+      end
+
+      it "one pdf and one doc" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'pdf'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.doc')), 'doc'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /pdf/
+        resource.extracted_content.should match /doc/
+      end
+
+      it "one pdf and one docx" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.pdf')), 'pdf'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.docx')), 'docx'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /pdf/
+        resource.extracted_content.should match /docx/
+      end
+
+      it "one doc and one docx" do
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.doc')), 'doc'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.docx')), 'docx'))
+        resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extracted_content.should match /doc/
+        resource.extracted_content.should match /docx/
       end
     end
   end

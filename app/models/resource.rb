@@ -73,25 +73,29 @@ class Resource < ActiveRecord::Base
     #puts "\n\nextracting content....\n"
     content = []
     attachments.each do |attachment|
-      if attachment.file.extension == FILE_EXTENSION_PDF
+      if attachment.file.extension == FILE_EXTENSION_DOC
+        doc = MSWordDoc::Extractor.load(attachment.file.current_path)
+        content << doc.whole_contents   # doc is MSWordDoc::Essence
+        doc.close() 
+      elsif attachment.file.extension == FILE_EXTENSION_DOCX
+        #doc, thumbnail = Hypodermic.extract('path/to/document', :thumbnail => true)
+        #content <<  Hypodermic.extract(attachment.file.current_path)
+        d = Docx::Document.open(attachment.file.current_path)
+        d.each_paragraph{|p| content << p}
+          #content
+        #end
+      elsif attachment.file.extension == FILE_EXTENSION_PDF
         reader = PDF::Reader.new(attachment.file.current_path, 'rb')
         reader.pages.each do |page|
           content << page.text
         end
-      elsif attachment.file.extension == FILE_EXTENSION_DOC
-        doc = MSWordDoc::Extractor.load(attachment.file.current_path)
-        content << doc.whole_contents   # doc is MSWordDoc::Essence
-        doc.close() 
       elsif attachment.file.extension == FILE_EXTENSION_RTF
         doc = RubyRTF::Parser.new.parse(File.open(attachment.file.current_path).read)
         doc.sections.each{|section| content << section[:text]}
-      elsif attachment.file.extension == FILE_EXTENSION_DOCX
-        #doc, thumbnail = Hypodermic.extract('path/to/document', :thumbnail => true)
-        content <<  Hypodermic.extract(attachment.file.current_path)
       elsif attachment.file.extension == FILE_EXTENSION_TXT
         f = File.open(attachment.file.current_path).each do |line|
-          line.strip!
-          content << line
+          #line.strip!
+          content << line.strip!
         end
         f.close
       end
@@ -101,8 +105,13 @@ class Resource < ActiveRecord::Base
       content << doc_content
 =end
     end
-    puts "====length: #{content.join(' ').length} final content: #{content.join(' ')}\n"
-    self.extracted_content = content.join(" ") unless content.empty?
+    #self.extracted_content = content.join(" ") unless content.empty?
+    #puts "====content: #{content}\n"
+    unless content.empty?
+      extracted_content = content.join(" ")
+      self.extracted_content = extracted_content.gsub(/\\r\\n/," ") 
+    end
+    puts "====content: #{self.extracted_content}\n"
   end
 =begin
   def clear_nil_attachments
