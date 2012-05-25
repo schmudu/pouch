@@ -70,6 +70,7 @@ class Resource < ActiveRecord::Base
   private
 
   def extract_content
+    # encoding: utf-8
     #puts "\n\nextracting content....\n"
     content = []
     attachments.each do |attachment|
@@ -88,6 +89,9 @@ class Resource < ActiveRecord::Base
         reader = PDF::Reader.new(attachment.file.current_path, 'rb')
         reader.pages.each do |page|
           content << page.text
+          puts "===valid? #{page.text.valid_encoding?}\n"
+          #page.text.encode!('UTF-16', 'UTF-8', :invalid => :replace, :replace => '')
+          #page.text.encode!('UTF-8', 'UTF-16')
         end
       elsif attachment.file.extension == FILE_EXTENSION_RTF
         doc = RubyRTF::Parser.new.parse(File.open(attachment.file.current_path).read)
