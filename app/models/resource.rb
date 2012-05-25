@@ -21,7 +21,7 @@ class Resource < ActiveRecord::Base
   attr_reader :topic_tokens
 
 
-  before_save :extract_content
+  #before_save :extract_content
 
   mapping do
     indexes :id, type: 'integer', :index => :not_analyzed, :include_in_all => false
@@ -68,8 +68,6 @@ class Resource < ActiveRecord::Base
   def attachment_count
     attachments.count
   end
-
-  private
 
   def extract_content
     # encoding: utf-8
@@ -124,7 +122,7 @@ class Resource < ActiveRecord::Base
       extracted_content = content.join(" ")
       self.extracted_content = extracted_content.gsub(/\\r\\n/," ") 
     end
-    puts "====content: #{self.extracted_content}\n"
+    #puts "====content: #{self.extracted_content}\n"
   end
 =begin
   def clear_nil_attachments
