@@ -16,6 +16,7 @@ FactoryGirl.define do
     #file                fixture_file_upload((File.join(Rails.root, '/public/robots.txt')), 'txt')
     #file                Rack::Test::UploadedFile.new((File.join(Rails.root, '/public/robots.txt')), 'txt')
     file                Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt')
+    file_cache          Rack::Test::UploadedFile.new(TEST_FILE_PATH, 'txt')
   end
 
   factory :resource do
