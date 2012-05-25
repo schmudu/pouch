@@ -75,29 +75,36 @@ class Resource < ActiveRecord::Base
     content = []
     attachments.each do |attachment|
       if attachment.file.extension == FILE_EXTENSION_DOC
-        doc = MSWordDoc::Extractor.load(attachment.file.current_path)
+        #doc = MSWordDoc::Extractor.load(attachment.file.current_path)
+        doc = MSWordDoc::Extractor.load(attachment.file_url)
         content << doc.whole_contents   # doc is MSWordDoc::Essence
         doc.close() 
       elsif attachment.file.extension == FILE_EXTENSION_DOCX
         #doc, thumbnail = Hypodermic.extract('path/to/document', :thumbnail => true)
         #content <<  Hypodermic.extract(attachment.file.current_path)
-        d = Docx::Document.open(attachment.file.current_path)
+        #d = Docx::Document.open(attachment.file.current_path)
+        d = Docx::Document.open(attachment.file_url)
         d.each_paragraph{|p| content << p}
           #content
         #end
       elsif attachment.file.extension == FILE_EXTENSION_PDF
-        reader = PDF::Reader.new(attachment.file.current_path, 'rb')
+        #reader = PDF::Reader.new(attachment.file.current_path, 'rb')
+        reader = PDF::Reader.new(attachment.file_url, 'rb')
         reader.pages.each do |page|
           content << page.text
-          puts "===valid? #{page.text.valid_encoding?}\n"
           #page.text.encode!('UTF-16', 'UTF-8', :invalid => :replace, :replace => '')
           #page.text.encode!('UTF-8', 'UTF-16')
         end
       elsif attachment.file.extension == FILE_EXTENSION_RTF
-        doc = RubyRTF::Parser.new.parse(File.open(attachment.file.current_path).read)
+        #doc = RubyRTF::Parser.new.parse(File.open(attachment.file.current_path).read)
+        doc = RubyRTF::Parser.new.parse(File.open(attachment.file_url).read)
         doc.sections.each{|section| content << section[:text]}
       elsif attachment.file.extension == FILE_EXTENSION_TXT
-        f = File.open(attachment.file.current_path).each do |line|
+        #logger.debug("\n====tempfile: #{attachment.file_url}\n")
+        #puts "#{attachment.methods.sort.join("\n")}"
+        #puts "===cache: #{attachment.file_cache}"
+        #f = File.open(attachment.file.current_path).each do |line|
+        f = File.open(attachment.file_url).each do |line|
           #line.strip!
           content << line.strip!
         end

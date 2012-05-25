@@ -215,7 +215,7 @@ describe ResourcesController do
     end
 
     describe "with valid params" do
-      it "creates a new Resource" do
+      it "creates a new Resource with one attachment" do
         lambda do
           post :create, {:resource => valid_attributes({:one => uploaded_file})}
           resource = Resource.last
