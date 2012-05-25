@@ -21,7 +21,8 @@ class ResourcesController < ApplicationController
 
     #create new user_attachment_download
     UserAttachmentDownload.create(:user_id => current_user.id, :attachment_id => attachment.id)
-    path = "uploads/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
+    #path = "uploads/#{params[:id]}/#{params[:basename]}.#{params[:extension]}"
+    path = attachment.file_url
     send_file path, :x_sendfile=>true
   end
 
