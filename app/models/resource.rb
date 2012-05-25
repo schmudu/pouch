@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class Resource < ActiveRecord::Base
   #Tire gem
   include ConstantsHelper
@@ -100,7 +102,7 @@ class Resource < ActiveRecord::Base
         doc = RubyRTF::Parser.new.parse(File.open(attachment.file_url).read)
         doc.sections.each{|section| content << section[:text]}
       elsif attachment.file.extension == FILE_EXTENSION_TXT
-        #logger.debug("\n====tempfile: #{attachment.file_url}\n")
+        logger.debug("\n====tempfile: #{attachment.file_url}\n")
         #puts "#{attachment.methods.sort.join("\n")}"
         #puts "===cache: #{attachment.file_cache}"
         #f = File.open(attachment.file.current_path).each do |line|

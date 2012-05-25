@@ -15,9 +15,11 @@ gem 'nested_form', :git => "git://github.com/ryanb/nested_form.git"
 gem 'omniauth-facebook'
 gem 'pdf-reader'
 gem 'tire'
+
+#docx extractor
 gem 'msworddoc-extractor', :git =>
   'git://github.com/dayflower/msworddoc-extractor.git'
-#gem 'hypodermic'
+#gem 'hypodermic'  #problem extracting
 gem 'ruby-rtf'
 gem 'docx'
 
