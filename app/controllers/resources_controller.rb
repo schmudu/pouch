@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class ResourcesController < ApplicationController
   include ResourcesHelper
   helper :resources
