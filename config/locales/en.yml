@@ -9,6 +9,7 @@ en:
     links: "Contact"
   favorites:
     messages:
+      already_favorite: "Stored in your favorites."
       none: "You do not have any favorites."
   how_it_works:
     title: "How It Works"
