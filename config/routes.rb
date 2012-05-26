@@ -1,4 +1,7 @@
 Mijikai::Application.routes.draw do
+  match "favorites/create" => "favorites#create", :as => 'create_favorite'
+  match "favorites/destroy" => "favorites#destroy", :as => 'destroy_favorite'
+
   # Only allow test users to sign in and out
   devise_for :test_users, :only => :sessions, :controllers => {:sessions => "test_users/sessions"}
 

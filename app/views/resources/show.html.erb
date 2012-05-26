@@ -12,12 +12,16 @@
 <ul>
   <% for attachment in @resource.attachments %>
     <li>
-    <% #link_to("Download", "/uploads/#{attachment.id}/#{File.basename(attachment.file.url)}") %>
-    <%= link_to("Download", attachment.file_url) %>
+    <% if Rails.env.production? %>
+      <%= link_to("Download", attachment.file_url) %>
+    <% else %>
+      <%= link_to("Download", "/uploads/#{attachment.id}/#{File.basename(attachment.file.url)}") %>
+    <% end %>
     </li>
   <% end %>
 </ul>
 
+<span>env<%= Rails.env.production? %></span>
 <h3>Topics</h3>
 <ul>
   <% for topic in @resource.topics %>
