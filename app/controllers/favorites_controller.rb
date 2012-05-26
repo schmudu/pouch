@@ -4,12 +4,15 @@ class FavoritesController < ApplicationController
     favorite = Favorite.new(:user_id => current_user.id, :resource_id => params[:id])
 
     if favorite.save
+      logger.debug("\n\nsaved favorite.")
       respond_to do |format|
         #format.html # should not call this
         #format.json { render json: @resource }
         format.js
       end 
     else
+      #logger.debug("\n\nnot working!errors: #{favorite.errors}")
+      favorite.errors.each {|k, e| logger.debug("\n===error: #{e}\n")}
       render :json => "doesn't work."
     end
   end

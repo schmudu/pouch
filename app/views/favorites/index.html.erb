@@ -1,13 +1,20 @@
+<div id="message"></div>
+
 <h1>My Favorites</h1>
 
-<table>
-  <tr>
+<% unless @favorites.empty? %>
+<table id="favorites">
+  <tr id="favorite_table_header_row">
     <th>Title</th>
+    <th></th>
   </tr>
 
-<% @favorites.each do |favorite| %>
-  <tr>
-    <td><%= link_to Resource.find_by_id(favorite.resource_id).title, Resource.find_by_id(favorite.resource_id) %></td>
-  </tr>
-<% end %>
+  <% @favorites.each do |favorite| %>
+    <tr>
+      <%= render @favorites %>
+    </tr>
+  <% end %>
 </table>
+<% else %>
+  <span><%= t('favorites.messages.none') %></span>
+<% end %>
