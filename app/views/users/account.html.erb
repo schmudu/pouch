@@ -6,13 +6,19 @@
 <br/>
 <br/>
 <h3>My Favorites</h3>
-<table>
-  <tr>
-    <th>Name</th>
-    <th></th>
-  </tr>
-  <%= render @favorites %>
-</table>
+<div id="favorites">
+  <% unless @favorites.empty? %>
+    <table>
+      <tr id="favorite_table_header_row">
+        <th>Name</th>
+        <th></th>
+      </tr>
+      <%= render @favorites %>
+    </table>
+  <% else %>
+    <span>You have no favorites yet.</span>
+  <% end %>
+</div>
 <br/>
 <br/><h3>Uploaded Resources</h3>
 <%= render @resources %>

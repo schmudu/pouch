@@ -17,10 +17,11 @@ class FavoritesController < ApplicationController
   def destroy
     favorite = Favorite.find(params[:id])
     favorite.destroy
+    @id = params[:id]
     respond_to do |format|
       #format.html { redirect_to account_path }
       #format.json { head :no_content}
-      format.js
+      format.js 
     end 
   end
 end

@@ -1,5 +1,5 @@
-  <tr>
+  <tr class="favorite_table_row" id="remove_favorite_<%= favorite.id %>">
     <td><%= Resource.find_by_id(favorite.resource_id).title%></th>
     <td>
-        <%= link_to "Remove", {:controller => 'favorites', :action => 'destroy', :format => :js, :id => favorite.id}, :id => "remove_favorite_#{favorite.id}", :remote => true %>
+        <%= link_to "Remove", {:controller => 'favorites', :action => 'destroy', :format => :js, :id => favorite.id}, :remote => true %>
   </tr>

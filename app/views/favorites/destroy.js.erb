@@ -1,2 +1,14 @@
-$("#message").html("<span>Resource removed from your favorites.</span>");
+//$("#message").html("<span>Resource removed from your favorites. id:</span>");
 //$("#remove_favorite_" + params).remove();
+//alert('id is ' + getURLParameter('id'));
+//$("#message").html("<span>id:<%= escape_javascript(@id) %></span>");
+$("#remove_favorite_<%= escape_javascript(@id) %>").remove();
+var rows = $(".favorite_table_row").length;
+//alert("number of rows: " + rows)
+if(rows == 0){
+  //remove header
+  $("#favorite_table_header_row").remove();
+
+  //insert text that they don't have any favorites
+  $("#favorites").append('<span>You no longer have any favorites.</span>');
+}
