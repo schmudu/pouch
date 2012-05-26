@@ -38,6 +38,7 @@ class Resource < ActiveRecord::Base
   validates_presence_of :description, :message => "Resource must have a description"
   validates             :description, :length => {:minimum => RESOURCE_DESCRIPTION_MIN_LENGTH}
   validates_presence_of :title, :message => "Resource must have a title"
+  validates             :title, :length => {:minimum => RESOURCE_TITLE_MIN_LENGTH}
   #validates_with ResourceValidator
 
   def topic_tokens=(tokens)

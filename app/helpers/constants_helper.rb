@@ -16,5 +16,7 @@ module ConstantsHelper
 
   #resources
   RESOURCE_ATTACHMENTS_MIN_NUM  = 1
-  RESOURCE_DESCRIPTION_MIN_LENGTH = 50;  #characters
+  RESOURCE_DESCRIPTION_MIN_LENGTH = 25;  #characters
+  RESOURCE_SCREEN_NAME_MIN_LENGTH = 5;  #characters
+  RESOURCE_TITLE_MIN_LENGTH = 5;  #characters
 end
