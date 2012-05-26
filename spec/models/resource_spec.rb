@@ -18,6 +18,16 @@ describe Resource do
       resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
       resource.should_not be_valid
     end
+
+    it "should be invalid with a description with less than the minumum" do 
+      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => 'a' * (ConstantsHelper::RESOURCE_DESCRIPTION_MIN_LENGTH-1))
+      resource.should_not be_valid
+    end
+
+    it "should be valid with a description with less than the minumum" do 
+      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => 'a' * ConstantsHelper::RESOURCE_DESCRIPTION_MIN_LENGTH)
+      resource.should be_valid
+    end
   end
 
   describe "topics" do

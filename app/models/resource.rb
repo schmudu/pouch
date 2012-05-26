@@ -36,6 +36,7 @@ class Resource < ActiveRecord::Base
   #before_create :clear_nil_attachments
   validates_presence_of :user_id
   validates_presence_of :description, :message => "Resource must have a description"
+  validates             :description, :length => {:minimum => RESOURCE_DESCRIPTION_MIN_LENGTH}
   validates_presence_of :title, :message => "Resource must have a title"
   #validates_with ResourceValidator
 
