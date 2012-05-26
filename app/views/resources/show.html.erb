@@ -1,4 +1,11 @@
+<%= javascript_include_tag "resources/show" %>
 
+<div id="message">
+</div>
+
+<% if user_signed_in? %>
+  <%= link_to "Add To Favorites", {:controller => 'favorites', :action => 'create', :format => :js, :id => params[:id]}, :id => 'add_favorite', :remote => true %>
+<% end %>
 <p>
   <b>Title:</b>
   <%= @resource.title %>
@@ -21,7 +28,6 @@
   <% end %>
 </ul>
 
-<span>env<%= Rails.env.production? %></span>
 <h3>Topics</h3>
 <ul>
   <% for topic in @resource.topics %>

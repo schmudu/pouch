@@ -9,9 +9,10 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :screen_name, :downloads
   # attr_accessible :title, :body
 
-  has_many :resources
-  has_many :user_attachment_downloads
-  has_many :user_resource_views
+  has_many :resources, :dependent => :destroy
+  has_many :user_attachment_downloads, :dependent => :destroy
+  has_many :user_resource_views, :dependent => :destroy
+  has_many :favorites, :dependent => :destroy
   
   validates_uniqueness_of :email
   validates_uniqueness_of :screen_name

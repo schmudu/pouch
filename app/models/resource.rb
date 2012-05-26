@@ -13,7 +13,8 @@ class Resource < ActiveRecord::Base
 
   belongs_to :user
   has_many :attachments, :as => :attachable, :dependent => :destroy
-  has_many :user_resource_views
+  has_many :user_resource_views, :dependent => :destroy
+  has_many :favorites, :dependent => :destroy
   has_many :resource_topics
   has_many :topics, through: :resource_topics
 

@@ -11,7 +11,7 @@ describe FavoritesController do
   end
 
   def valid_params_create
-    {:resource_id => @resource.id}
+    {:id => @resource.id}
   end
 
   describe "GET 'create'" do
