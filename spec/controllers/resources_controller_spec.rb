@@ -464,6 +464,17 @@ describe ResourcesController do
       search.results.should_not be_empty
     end
 
+    it "should increase the number of queries by 1" do
+      lambda do
+        search = Resource.tire.search(params)
+      end.should change(UserQuery, :count).from(0).to(1)
+    end
+
+    it "should not increase the number of queries if query is empty string" do
+      lambda do
+        search = Resource.tire.search({:query => ""})
+      end.should_not change(UserQuery, :count)
+    end
 =begin
     it "should return a result even if not an exact match" do
       search = Resource.tire.search({:query => 'ran'})

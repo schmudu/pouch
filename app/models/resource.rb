@@ -47,6 +47,11 @@ class Resource < ActiveRecord::Base
   end
 
   def self.search(params)
+    search_query = params[:query]
+    UserQuery.create(:content => params[:query]) if ((!search_query.nil?) && (!search_query.empty?))
+    #logger.debug ("\n\n=====Query: #{Query.methods.sort.join("\n")}")
+    #logger.debug ("\n\n=====Query: #{Query.class}")
+
     tire.search(page: params[:page], per_page: 15) do |s|
       s.query { string params[:query], default_operator: "AND"} if params[:query].present?
       s.filter :term, user_id: params[:user_id] if params[:user_id].present?
