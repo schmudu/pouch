@@ -51,4 +51,17 @@ describe FavoritesController do
     end
   end
 
+  describe "GET 'index'" do
+    it "returns http success" do
+      get :index
+      response.should be_success
+    end
+
+    it "on sign out should redirect user to sign in page" do
+      sign_out @user
+      get :index
+      response.should redirect_to(new_user_session_path)
+    end
+  end
+
 end

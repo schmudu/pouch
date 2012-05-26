@@ -1,0 +1,13 @@
+<h1>My Favorites</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+  </tr>
+
+<% @favorites.each do |favorite| %>
+  <tr>
+    <td><%= link_to Resource.find_by_id(favorite.resource_id).title, Resource.find_by_id(favorite.resource_id) %></td>
+  </tr>
+<% end %>
+</table>

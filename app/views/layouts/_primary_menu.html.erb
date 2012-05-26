@@ -3,6 +3,7 @@
   <li><%= link_to(t('resources.links'), new_resource_path) %></li>
   <li><%= link_to(t('resources.browse'), resources_path) %></li>
   <% if user_signed_in? %>
+    <li><%= link_to(t('accounts.favorites'), favorites_path) %></li>
     <li><%= link_to(t('accounts.links'), account_path) %></li>
     <li><%= link_to(t('sessions.sign_out'), destroy_user_session_path, :method => :delete) %></li>
   <% else %>

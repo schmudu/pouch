@@ -24,4 +24,8 @@ class FavoritesController < ApplicationController
       format.js 
     end 
   end
+
+  def index
+    @favorites = Favorite.find(:all, :conditions => ["user_id = ?", current_user.id])
+  end
 end

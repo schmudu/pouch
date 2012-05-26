@@ -4,6 +4,7 @@
 en:
   accounts: 
     links: "My Account"
+    favorites: "Favorites"
   contact:
     links: "Contact"
   how_it_works:

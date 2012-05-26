@@ -45,6 +45,7 @@ Mijikai::Application.routes.draw do
 
   #user
   match 'account' => 'users#account', :as => 'account'
+  match 'favorites' => 'favorites#index', :as => 'favorites'
   
   #topic
   #match '/topics' => 'topics#index', :as => 'topics'
