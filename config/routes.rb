@@ -41,6 +41,7 @@ Mijikai::Application.routes.draw do
     match 'privacy' => :privacy, :as => 'privacy'
     match 'terms' => :terms, :as => 'terms'
     match 'unauthorized' => :unauthorized, :as => 'unauthorized'
+    match 'not_found' => :not_found, :as => 'lost'
   end
 
   #user

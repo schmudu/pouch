@@ -75,6 +75,8 @@ class PagesController < ApplicationController
   end
 
   def not_found
+    rand_id = rand(Quote.count)
+    @random_quote = Quote.first(:conditions => [ "id >= ?", rand_id])
     @title = 'Page Not Found'
   end
 

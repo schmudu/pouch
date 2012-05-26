@@ -120,6 +120,11 @@ describe ResourcesController do
       response.should be_success
     end
 
+    it "should redirect to lost page if resource not found" do
+      get :show, {:id => -928938293892}
+      response.should redirect_to(lost_path)
+    end
+
     it "should increment user_resource view count after success for user and resource" do
       sign_in @user
 

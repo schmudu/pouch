@@ -42,21 +42,25 @@ class ResourcesController < ApplicationController
   # GET /resources/1
   # GET /resources/1.json
   def show
-    @resource = Resource.find(params[:id])
+    @resource = Resource.find_by_id(params[:id])
 
-    #update view count
-    @resource.update_attribute(:views, @resource.views + 1)
+    unless @resource.nil?
+      #update view count
+      @resource.update_attribute(:views, @resource.views + 1)
 
-    #update user resource view count
-    if user_signed_in?
-      UserResourceView.create(:user_id => current_user.id, :resource_id => @resource.id) 
+      #update user resource view count
+      if user_signed_in?
+        UserResourceView.create(:user_id => current_user.id, :resource_id => @resource.id) 
+      else
+        UserResourceView.create(:user_id => nil, :resource_id => @resource.id)
+      end
+
+      respond_to do |format|
+        format.html # show.html.erb
+        format.json { render json: @resource }
+      end
     else
-      UserResourceView.create(:user_id => nil, :resource_id => @resource.id)
-    end
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @resource }
+      redirect_to lost_path
     end
   end
 
