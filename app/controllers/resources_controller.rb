@@ -131,6 +131,7 @@ class ResourcesController < ApplicationController
     @resource = Resource.find(params[:id])
     counter = @resource.attachments.count   #track number of attachments resource will have if we update it
     resource_changed = false                #track whether or not resource has changed
+    resource_attachment_changed = false     #track whether or not a file was add/removed
 
     params[:resource][:attachments_attributes].each do |key, attribute|
       #control structure created because we can't validate the model
@@ -143,6 +144,7 @@ class ResourcesController < ApplicationController
           #uploading new file
           counter += 1
           resource_changed = true
+          resource_attachment_changed = true
         else
           #file untouched, previously loaded
         end
@@ -154,6 +156,7 @@ class ResourcesController < ApplicationController
           #file previously uploaded and will be removed
           counter += -1
           resource_changed = true
+          resource_attachment_changed = true
         else
           #empty file was added and removed
         end
@@ -171,12 +174,14 @@ class ResourcesController < ApplicationController
       @resource.errors[:attachments] = 'Must provide at least one attachment'
       render 'edit'
     elsif @resource.update_attributes(params[:resource])
+      #update extracted content
+      if resource_attachment_changed
+        @resource.extract_content
+        @resource.save
+      end
       resource_changed ? notice = t('resources.updated') : notice = t('resources.no_change')
       redirect_to @resource, notice: notice
     else
-      @resource.errors.each do |key, error|
-        logger.debug("==DEBUG KEY: #{key} ERROR: #{error}\n")
-      end
       render 'edit'
     end
   end

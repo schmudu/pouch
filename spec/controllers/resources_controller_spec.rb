@@ -356,6 +356,33 @@ describe ResourcesController do
           response.should redirect_to(resource_path(:id => @resource.id))
         end.should change(@resource.attachments, :count).from(2).to(4)
       end
+
+      it "should remove previous files and update the extracted_content field" do
+
+      
+        attachment_one = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.txt')), 'txt'))
+        attachment_two = FactoryGirl.create(:attachment, :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_two.txt')), 'txt'))
+        resource = FactoryGirl.build(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
+        resource.extract_content
+        resource.save
+        
+        #text from file one
+        resource.extracted_content.should match /txt/
+        resource.extracted_content.should_not match /doc/
+        resource.extracted_content.should_not match /docx/
+
+        #update resource
+        #post :update, {:id=>@resource.id, :resource => valid_attributes({:one => :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.doc')), 'doc'), :_destroy=>"false"})}
+        post :update, {:id=>resource.id, :resource => valid_attributes({:one => {:file => Rack::Test::UploadedFile.new(File.join(Rails.root, '/test/downloads/sample_one.doc'), 'doc'), :_destroy=>"false"}, :two => file_previously_uploaded_removed(attachment_one.id), :three => {:file => Rack::Test::UploadedFile.new(File.join(Rails.root, '/test/downloads/sample_one.docx'), 'docx'), :_destroy=>"false"}, :four => file_previously_uploaded_removed(attachment_two.id)})}
+
+        #get updated model
+        resource = Resource.find_by_id(resource.id)
+        resource.extracted_content.should match /doc/
+        resource.extracted_content.should match /docx/
+        resource.extracted_content.should_not match /txt/
+      end
+
+
     end
 
     describe "with invalid params" do
