@@ -1,3 +1,5 @@
+<%= javascript_include_tag "resources/form" %>
+
 <%= nested_form_for @resource, :html=>{:multipart => true } do |f| %>
   <p>
   <%= f.label :title %><br />
@@ -10,6 +12,7 @@
   <p>
   <%= f.label :topic_tokens, "Tokens" %><br />
   <%= f.text_field :topic_tokens %>
+  <span><i>Example: 7th Grade Algebra Square Root</i></span>
   </p>
   <%= f.fields_for :attachments do |attachment_form|  %>
     <p>

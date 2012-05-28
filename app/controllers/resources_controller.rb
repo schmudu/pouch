@@ -84,6 +84,7 @@ class ResourcesController < ApplicationController
   # POST /resources
   # POST /resources.json
   def create
+    #any validation changes here may need to be duplicated in update method
     #clear nil attachments
     unless params[:resource][:attachments_attributes].nil?
       params[:resource][:attachments_attributes].each do |key, attribute|
@@ -98,7 +99,8 @@ class ResourcesController < ApplicationController
       @resource.user_id = current_user.id
       @resource.valid?
 
-      @resource.errors[:agreed] = 'Must agree to terms of use.' unless @resource.agreed == '1'
+      @resource.errors[:agreed] = t('resources.agreement') unless @resource.agreed == '1'
+      @resource.errors[:topics] = t('resources.no_topic') if @resource.topics.empty?
       if((params[:resource][:attachments_attributes].nil?) || (params[:resource][:attachments_attributes].empty?))
         @resource.errors[:attachments] = 'Must provide at least one attachment'
         render 'new'
@@ -127,6 +129,7 @@ class ResourcesController < ApplicationController
   # PUT /resources/1
   # PUT /resources/1.json
   def update
+    #any validation changes here may need to be duplicated in create method
     #clear nil attachments
     @resource = Resource.find(params[:id])
     counter = @resource.attachments.count   #track number of attachments resource will have if we update it
@@ -166,12 +169,15 @@ class ResourcesController < ApplicationController
     #check if title/description have changed
     resource_changed = true if((params[:resource][:title] != @resource.title) || (params[:resource][:description] != @resource.description))
 
-    #TODO: going to need to check for tags and grade level changes
+    #check for topic tags
+    @resource.errors[:topics] = t('resources.no_topic') if params[:resource][:topic_tokens].empty?
     
     if(counter<ConstantsHelper::RESOURCE_ATTACHMENTS_MIN_NUM)
       #counter needs to have at least one attachment
       @resource.valid?
       @resource.errors[:attachments] = 'Must provide at least one attachment'
+      render 'edit'
+    elsif !@resource.errors.empty?
       render 'edit'
     elsif @resource.update_attributes(params[:resource])
       #update extracted content
@@ -179,7 +185,8 @@ class ResourcesController < ApplicationController
         @resource.extract_content
         @resource.save
       end
-      resource_changed ? notice = t('resources.updated') : notice = t('resources.no_change')
+      #resource_changed ? notice = t('resources.updated') : notice = t('resources.no_change')
+      notice = t('resources.saved')
       redirect_to @resource, notice: notice
     else
       render 'edit'

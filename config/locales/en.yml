@@ -14,16 +14,19 @@ en:
   how_it_works:
     title: "How It Works"
   links:
+    about: "About"
+    contact: "Contact"
+    privacy: "Privacy"
     share_resource: "Share Resource" 
     terms: "Terms of Use"
-    privacy: "Privacy"
-    contact: "Contact"
-    about: "About"
   resources:
+    agreement: "Must agree to terms of use"
     browse: "Browse"
     links: "Share Resource"
     no_change: "No update to the resource was made"
-    updated: "Resource was updated"
+    no_topic: "Must provide at least one tag" 
+    saved: "Resource saved"
+    updated: "Resource updated"
   sessions:
     sign_in: "Sign In" 
     sign_out: "Sign Out" 

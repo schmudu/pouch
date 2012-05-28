@@ -191,7 +191,7 @@ describe ResourcesController do
     end
 
     def valid_attributes params
-      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :agreed => "1", :attachments_attributes => params}
+      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :topic_tokens => "<<<New Topic>>>", :agreed => "1", :attachments_attributes => params}
         #{:one => attributes_uploaded_file}
       #}
     end
@@ -246,10 +246,16 @@ describe ResourcesController do
     end
 
     describe "with invalid params" do
+      it "with an empty token" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => uploaded_file}).merge({:topic_tokens => ""})}
+          response.should render_template('new')
+        end.should_not change(Resource, :count)
+      end
+
       it "should re-render new page if agreed is not set" do
         lambda do
           post :create, {:resource => valid_attributes({:one => uploaded_file}).merge({:agreed => 0})}
-          resource = Resource.last
           response.should render_template('new')
         end.should_not change(Resource, :count)
       end
@@ -281,7 +287,7 @@ describe ResourcesController do
     end
 
     def valid_attributes params
-      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :attachments_attributes => params}
+      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :topic_tokens => "<<<New Topic>>>", :attachments_attributes => params}
     end
 
     def file_previously_uploaded_untouched attachment_id
@@ -386,6 +392,11 @@ describe ResourcesController do
     end
 
     describe "with invalid params" do
+      it "updates with no topics" do
+        post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}).merge(:topic_tokens => "")}
+        response.should render_template('edit')
+      end
+
       it "attempts to update resource by removing all attachments" do
           post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_removed(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)})}
           response.should render_template('edit')
