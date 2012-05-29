@@ -228,6 +228,12 @@ describe ResourcesController do
         end.should change(Resource, :count).by(1)
       end
 
+      it "should create a new topic" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => uploaded_file})}
+        end.should change(Topic, :count).by(1)
+      end
+
       it "creates a new Resource with three attachments" do
         lambda do
           post :create, {:resource => valid_attributes({:one => uploaded_file, :two => uploaded_file, :three => uploaded_file})}
@@ -467,61 +473,6 @@ describe ResourcesController do
       get :edit, {:id => @resource.to_param}
       response.should redirect_to(unauthorized_path)
     end
-  end
-
-  describe "search" do
-    after(:all) do
-      Resource.tire.index.delete
-    end
-
-    before(:all) do
-      Resource.index_name("test_#{Resource.model_name.plural}")
-    end
-
-    before(:each) do
-      Resource.tire.index.delete
-      Resource.tire.create_elasticsearch_index
-      @user = FactoryGirl.create(:user)
-      @user.confirm!
-      attachment_one = FactoryGirl.create(:attachment)
-      attachment_two = FactoryGirl.create(:attachment)
-      resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [attachment_one, attachment_two])
-      resource = FactoryGirl.create(:resource, :title => 'Patrick Random Worksheet', :user_id => @user.id, :attachments => [attachment_one, attachment_two])
-      Resource.index.refresh
-    end
-
-    def params
-      {:query => "random"}
-    end
-
-    it "should return an array of resources" do
-      search = Resource.tire.search(params)
-      puts "\n\n===count: #{search.results.count} resources: #{search}\n"
-      puts "search: #{search.to_json}"
-      #puts "===resource: #{resources.first} title: #{resources.first.title} description: #{resources.first.description}"
-      search.results.should_not be_empty
-    end
-
-    it "should increase the number of queries by 1" do
-      lambda do
-        search = Resource.tire.search(params)
-      end.should change(UserQuery, :count).from(0).to(1)
-    end
-
-    it "should not increase the number of queries if query is empty string" do
-      lambda do
-        search = Resource.tire.search({:query => ""})
-      end.should_not change(UserQuery, :count)
-    end
-=begin
-    it "should return a result even if not an exact match" do
-      search = Resource.tire.search({:query => 'ran'})
-      puts "\n\n===count: #{search.results.count} resources: #{search}\n"
-      puts "search: #{search.to_json}"
-      #puts "===resource: #{resources.first} title: #{resources.first.title} description: #{resources.first.description}"
-      search.results.should_not be_empty
-    end
-=end
   end
 =begin
   # This should return the minimal set of attributes required to create a valid
