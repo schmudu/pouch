@@ -107,7 +107,7 @@ class ResourcesController < ApplicationController
       elsif !@resource.errors.empty?
         render 'new'
       else 
-        @resource.extract_content
+        #@resource.extract_content
         @resource.save
         redirect_to @resource, notice: 'Resource was successfully created.' 
       end

@@ -22,15 +22,17 @@ class Resource < ActiveRecord::Base
   attr_reader :topic_tokens
 
 
-  #before_save :extract_content
+  before_create :extract_content
 
   mapping do
     indexes :id, type: 'integer', :index => :not_analyzed, :include_in_all => false
-    indexes :title, type: 'string', :analyzer => 'snowball', :index => :not_analyzed
-    indexes :description, type: 'string', :analyzer => 'snowball'
+    indexes :title, type: 'string', :index => :not_analyzed, :store => true
+    indexes :description, type: 'string'
+    indexes :extracted_content, type: 'string', :analyzer => 'snowball'
     #indexes :user_id, type: 'integer', :index => :not_analyzed
-    indexes :author, :analyzer => 'keyword'
-    #indexes :attachment_count, type: 'integer'
+    indexes :author, type: 'string', :index => :not_analyzed 
+    indexes :views, type: 'integer', :index => :not_analyzed
+    #indexes :attachment_count, type: 'integer', :index => :not_analyzed
   end
 
   #before_create :clear_nil_attachments
@@ -50,10 +52,11 @@ class Resource < ActiveRecord::Base
     search_query = params[:query]
     UserQuery.create(:content => params[:query]) if ((!search_query.nil?) && (!search_query.empty?))
     #logger.debug ("\n\n=====Query: #{Query.methods.sort.join("\n")}")
-    #logger.debug ("\n\n=====Query: #{Query.class}")
+    logger.debug ("\n\n=====Query: #{Query.class}")
 
     tire.search(page: params[:page], per_page: 15) do |s|
       s.query { string params[:query], default_operator: "AND"} if params[:query].present?
+      #s.query { string "extracted_content:#{params[:query]}", analyzer: 'snowball'} if params[:query].present?
       s.filter :term, user_id: params[:user_id] if params[:user_id].present?
       #s.sort {by :title, "asc"} if params[:query].blank?
       s.facet "authors" do
@@ -108,15 +111,17 @@ class Resource < ActiveRecord::Base
         doc = RubyRTF::Parser.new.parse(File.open(attachment.file_url).read)
         doc.sections.each{|section| content << section[:text]}
       elsif attachment.file.extension == FILE_EXTENSION_TXT
-        logger.debug("\n====tempfile: #{attachment.file_url}\n")
+        #logger.debug("\n====tempfile: #{attachment.file_url}\n")
         #puts "#{attachment.methods.sort.join("\n")}"
-        #puts "===cache: #{attachment.file_cache}"
         #f = File.open(attachment.file.current_path).each do |line|
         f = File.open(attachment.file_url).each do |line|
+          #logger.debug "===content: #{line}"
           #line.strip!
-          content << line.strip!
+          content << line.strip
+          #logger.debug "===after content: #{content}"
         end
         f.close
+        #logger.debug "===text extraction: #{content}"
       end
 =begin
       yomu = Yomu.new "#{attachment.file.current_path}"
@@ -125,12 +130,12 @@ class Resource < ActiveRecord::Base
 =end
     end
     #self.extracted_content = content.join(" ") unless content.empty?
-    #puts "====content: #{content}\n"
+    #puts "====before content: #{content}\n"
     unless content.empty?
       extracted_content = content.join(" ")
       self.extracted_content = extracted_content.gsub(/\\r\\n/," ") 
     end
-    #puts "====content: #{self.extracted_content}\n"
+    #puts "====after content: #{self.extracted_content}\n"
   end
 =begin
   def clear_nil_attachments
