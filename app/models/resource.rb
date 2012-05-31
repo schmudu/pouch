@@ -54,6 +54,7 @@ class Resource < ActiveRecord::Base
     #logger.debug ("\n\n=====Query: #{Query.methods.sort.join("\n")}")
     logger.debug ("\n\n=====Query: #{Query.class}")
 
+=begin
     tire.search(page: params[:page], per_page: 15) do |s|
       s.query { string params[:query], default_operator: "AND"} if params[:query].present?
       #s.query { string "extracted_content:#{params[:query]}", analyzer: 'snowball'} if params[:query].present?
@@ -66,7 +67,23 @@ class Resource < ActiveRecord::Base
       #debugging
       #raise s.to_curl
     end
+=end
+    #tire.search(page: params[:page], per_page: 15) do |s|
+    tire.search(per_page: 15) do |s|
+      s.query do |q|
+        q.boolean do |b|
+          #b.must{ string "#{params[:query]}" if params[:query].present? } #works!
+          #b.should{ string "#{params[:query]}", default_operator: "AND" if params[:query].present? }
+          b.should{ string "#{params[:query]}"} if params[:query].present? 
+          b.should{ string "#{params[:query]}", default_field: 'extracted_content', analyzer: 'snowball'} if params[:query].present? 
+        end
+      end
+      #raise s.to_json
+      logger.debug "\n\n=======curl: #{s.to_curl}\n"
+    end
+
   end
+
 
   def to_indexed_json
     to_json(methods: [:author, :attachment_count])
