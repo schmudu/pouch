@@ -32,6 +32,7 @@ class Resource < ActiveRecord::Base
     #indexes :user_id, type: 'integer', :index => :not_analyzed
     indexes :author, type: 'string', :index => :not_analyzed 
     indexes :views, type: 'integer', :index => :not_analyzed
+    indexes :topic_tags, :index => :not_analyzed
     #indexes :attachment_count, type: 'integer', :index => :not_analyzed
   end
 
@@ -86,7 +87,7 @@ class Resource < ActiveRecord::Base
 
 
   def to_indexed_json
-    to_json(methods: [:author, :attachment_count])
+    to_json(methods: [:author, :attachment_count, :topic_tags])
   end
 
   def author
@@ -95,6 +96,12 @@ class Resource < ActiveRecord::Base
 
   def attachment_count
     attachments.count
+  end
+
+  def topic_tags
+    @topics = []
+    self.topics.each{|topic| @topics << topic.name.to_s}
+    @topics.join(" ")
   end
 
   def extract_content
