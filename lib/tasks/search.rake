@@ -21,7 +21,12 @@ namespace :search do
 =end
     desc "Removing old index." 
     Resource.tire.index.delete
-    desc "Rebuilding resource index." 
+
+    desc "Creating map for resource"
+    Resource.tire.index.create(:mappings => Resource.tire.mapping_to_hash, :settings => Resource.tire.settings)
+
+    desc "Importing all resources." 
     Resource.tire.index.import Resource.all
+    Resource.tire.index.refresh
   end
 end

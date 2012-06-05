@@ -11,6 +11,8 @@
   <tr>
     <th>Title</th>
     <th>Description</th>
+    <th>Content</th>
+    <th>Tags</th>
     <th>Author</th>
     <th>Attachments</th>
   </tr>
@@ -19,6 +21,14 @@
   <tr>
     <td><%= link_to(resource.title, resource) %></td>
     <td><%= resource.description %></td>
+    <td><%= resource.extracted_content %></td>
+    <td>
+      <% unless resource.search_topic_tags.empty? %>
+        <% resource.search_topic_tags.each do |topic| %>
+          <span><%= topic %></span>&nbsp;
+        <% end %>
+      <% end %>
+    </td>
     <td><%= resource.author %></td>
     <td><%= resource.attachment_count %></td>
   </tr>

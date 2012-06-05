@@ -27,12 +27,13 @@ class Resource < ActiveRecord::Base
   mapping do
     indexes :id, type: 'integer', :index => :not_analyzed, :include_in_all => false
     indexes :title, type: 'string', :index => :not_analyzed, :store => true
-    indexes :description, type: 'string'
-    indexes :extracted_content, type: 'string', :analyzer => 'snowball'
+    indexes :description, type: 'string', :index => :not_analyzed, :store => true
+    #indexes :extracted_content, type: 'string', :analyzer => 'standard'
+    indexes :extracted_content, type: 'string', :analyzer => 'snowball', :store => true
     #indexes :user_id, type: 'integer', :index => :not_analyzed
-    indexes :author, type: 'string', :index => :not_analyzed 
+    indexes :author, type: 'string', :index => :not_analyzed, :store => true 
     indexes :views, type: 'integer', :index => :not_analyzed
-    indexes :topic_tags, :index => :not_analyzed
+    indexes :topic_tags, :index => :not_analyzed, :store => true
     #indexes :attachment_count, type: 'integer', :index => :not_analyzed
   end
 
@@ -87,7 +88,7 @@ class Resource < ActiveRecord::Base
 
 
   def to_indexed_json
-    to_json(methods: [:author, :attachment_count, :topic_tags])
+    to_json(methods: [:author, :attachment_count, :topic_tags, :search_topic_tags])
   end
 
   def author
@@ -102,6 +103,12 @@ class Resource < ActiveRecord::Base
     @topics = []
     self.topics.each{|topic| @topics << topic.name.to_s}
     @topics.join(" ")
+  end
+
+  def search_topic_tags
+    @topics = []
+    self.topics.each{|topic| @topics << topic.name.to_s}
+    @topics
   end
 
   def extract_content
