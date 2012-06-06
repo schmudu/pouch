@@ -33,6 +33,7 @@ class Resource < ActiveRecord::Base
     indexes :views, type: 'integer', :index => :not_analyzed, :store => true
     indexes :downloads, type: 'integer', :index => :not_analyzed, :store => true
     indexes :topic_tags, :index => :not_analyzed, :store => true
+    indexes :search_topic_tags
     #indexes :attachment_count, type: 'integer', :index => :not_analyzed
   end
 
@@ -77,13 +78,21 @@ class Resource < ActiveRecord::Base
           #b.should{ string "#{params[:query]}", default_operator: "AND" if params[:query].present? }
           b.should{ string "#{params[:query]}"} if params[:query].present? 
           b.should{ string "#{params[:query]}", default_field: 'extracted_content', analyzer: 'snowball'} if params[:query].present? 
-          b.must { term :user_id, params[:user_id] } if params[:user_id].present?
+          #b.must{ term :user_id, params[:user_id] } if params[:user_id].present?
+          #b.must{ term :topic_tags, params[:topic_tags] } if params[:topic_tags].present?
+          b.must{ term :search_topic_tags, params[:resource_topics] } if params[:resource_topics].present?
         end
       end
 
+      #s.facet "topic_tags", :global => true do
+      s.facet "resource_topics", :global => true do
+        terms :search_topic_tags
+      end
+=begin
       s.facet "authors" do
         terms :user_id
       end
+=end
       #raise s.to_json
       logger.debug "\n\n=======curl: #{s.to_curl}\n"
     end

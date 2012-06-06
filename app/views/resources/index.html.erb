@@ -6,13 +6,13 @@
 <% end %>
 
 <div id="facets">
-  <h3>Authors</h3>
+  <h3>Topics</h3>
   <ul>
-    <% @resources.facets['authors']['terms'].each do |facet| %>
+    <% @resources.facets['resource_topics']['terms'].each do |facet| %>
       <li>
-        <%= link_to_unless_current User.find_by_id(facet['term']).screen_name, params.merge(user_id: facet['term']) %>
-        <% if params[:user_id] == facet['term'].to_s %>
-          (<%= link_to "remove", user_id: nil %>)
+        <%= link_to_unless_current Topic.find_by_name(facet['term']).name, params.merge(resource_topics: facet['term']) %>
+        <% if params[:resource_topics] == facet['term'].to_s %>
+          (<%= link_to "remove", resource_topics: nil %>)
         <% else %>
           (<%= facet['count'] %>)
         <% end %>
