@@ -28,11 +28,10 @@ class Resource < ActiveRecord::Base
     indexes :id, type: 'integer', :index => :not_analyzed, :include_in_all => false
     indexes :title, type: 'string', :index => :not_analyzed, :store => true
     indexes :description, type: 'string', :index => :not_analyzed, :store => true
-    #indexes :extracted_content, type: 'string', :analyzer => 'standard'
     indexes :extracted_content, type: 'string', :analyzer => 'snowball', :store => true
-    #indexes :user_id, type: 'integer', :index => :not_analyzed
     indexes :author, type: 'string', :index => :not_analyzed, :store => true 
-    indexes :views, type: 'integer', :index => :not_analyzed
+    indexes :views, type: 'integer', :index => :not_analyzed, :store => true
+    indexes :downloads, type: 'integer', :index => :not_analyzed, :store => true
     indexes :topic_tags, :index => :not_analyzed, :store => true
     #indexes :attachment_count, type: 'integer', :index => :not_analyzed
   end
@@ -54,7 +53,7 @@ class Resource < ActiveRecord::Base
     search_query = params[:query]
     UserQuery.create(:content => params[:query]) if ((!search_query.nil?) && (!search_query.empty?))
     #logger.debug ("\n\n=====Query: #{Query.methods.sort.join("\n")}")
-    logger.debug ("\n\n=====Query: #{Query.class}")
+    #logger.debug ("\n\n=====Query: #{Query.class}")
 
 =begin
     tire.search(page: params[:page], per_page: 15) do |s|
@@ -78,7 +77,12 @@ class Resource < ActiveRecord::Base
           #b.should{ string "#{params[:query]}", default_operator: "AND" if params[:query].present? }
           b.should{ string "#{params[:query]}"} if params[:query].present? 
           b.should{ string "#{params[:query]}", default_field: 'extracted_content', analyzer: 'snowball'} if params[:query].present? 
+          b.must { term :user_id, params[:user_id] } if params[:user_id].present?
         end
+      end
+
+      s.facet "authors" do
+        terms :user_id
       end
       #raise s.to_json
       logger.debug "\n\n=======curl: #{s.to_curl}\n"

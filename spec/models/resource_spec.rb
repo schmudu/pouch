@@ -412,7 +412,8 @@ describe Resource do
         FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
         FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
         Resource.index.refresh
-        search = Resource.search({:query => params})
+        #search = Resource.search({:query => params})
+        search = Resource.search(params)
 =begin
         search = Tire.search('test_resources') do
           query do

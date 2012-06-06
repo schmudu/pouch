@@ -22,7 +22,7 @@ namespace :search do
     desc "Removing old index." 
     Resource.tire.index.delete
 
-    desc "Creating map for resource"
+    desc "Creating new map for resource based on what's defined in the resource.rb file"
     Resource.tire.index.create(:mappings => Resource.tire.mapping_to_hash, :settings => Resource.tire.settings)
 
     desc "Importing all resources." 
