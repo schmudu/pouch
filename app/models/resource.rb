@@ -31,7 +31,7 @@ class Resource < ActiveRecord::Base
     indexes :extracted_content, type: 'string', :analyzer => 'snowball', :store => true
     indexes :author, type: 'string', :index => :not_analyzed, :store => true 
     indexes :views, type: 'integer', :index => :not_analyzed, :store => true
-    indexes :downloads, type: 'integer', :index => :not_analyzed, :store => true
+    #indexes :downloads, type: 'integer', :index => :not_analyzed, :store => true
     indexes :topic_tags, :index => :not_analyzed, :store => true
     indexes :search_topic_tags
     #indexes :attachment_count, type: 'integer', :index => :not_analyzed
@@ -46,7 +46,6 @@ class Resource < ActiveRecord::Base
   #validates_with ResourceValidator
 
   def topic_tokens=(tokens)
-    #self.topic_ids = ids.split(",")
     self.topic_ids = Topic.ids_from_tokens(tokens)
   end
 
@@ -56,44 +55,21 @@ class Resource < ActiveRecord::Base
     #logger.debug ("\n\n=====Query: #{Query.methods.sort.join("\n")}")
     #logger.debug ("\n\n=====Query: #{Query.class}")
 
-=begin
-    tire.search(page: params[:page], per_page: 15) do |s|
-      s.query { string params[:query], default_operator: "AND"} if params[:query].present?
-      #s.query { string "extracted_content:#{params[:query]}", analyzer: 'snowball'} if params[:query].present?
-      s.filter :term, user_id: params[:user_id] if params[:user_id].present?
-      #s.sort {by :title, "asc"} if params[:query].blank?
-      s.facet "authors" do
-        terms :user_id
-      end
-
-      #debugging
-      #raise s.to_curl
-    end
-=end
-    #tire.search(page: params[:page], per_page: 15) do |s|
     tire.search(per_page: 15) do |s|
       s.query do |q|
         q.boolean do |b|
-          #b.must{ string "#{params[:query]}" if params[:query].present? } #works!
-          #b.should{ string "#{params[:query]}", default_operator: "AND" if params[:query].present? }
           b.should{ string "#{params[:query]}"} if params[:query].present? 
           b.should{ string "#{params[:query]}", default_field: 'extracted_content', analyzer: 'snowball'} if params[:query].present? 
-          #b.must{ term :user_id, params[:user_id] } if params[:user_id].present?
-          #b.must{ term :topic_tags, params[:topic_tags] } if params[:topic_tags].present?
-          b.must{ term :search_topic_tags, params[:resource_topics] } if params[:resource_topics].present?
+          #b.must{ term :search_topic_tags, params[:current_resource_topics] } if params[:current_resource_topics].present?
         end
       end
 
-      #s.facet "topic_tags", :global => true do
-      s.facet "resource_topics", :global => true do
+=begin
+      s.facet "resource_topics" do
         terms :search_topic_tags
       end
-=begin
-      s.facet "authors" do
-        terms :user_id
-      end
 =end
-      #raise s.to_json
+
       logger.debug "\n\n=======curl: #{s.to_curl}\n"
     end
 

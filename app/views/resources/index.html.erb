@@ -5,22 +5,6 @@
   </p>
 <% end %>
 
-<div id="facets">
-  <h3>Topics</h3>
-  <ul>
-    <% @resources.facets['resource_topics']['terms'].each do |facet| %>
-      <li>
-        <%= link_to_unless_current Topic.find_by_name(facet['term']).name, params.merge(resource_topics: facet['term']) %>
-        <% if params[:resource_topics] == facet['term'].to_s %>
-          (<%= link_to "remove", resource_topics: nil %>)
-        <% else %>
-          (<%= facet['count'] %>)
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
-</div>
-
 <h1>Listing resources</h1>
 
 <table>
