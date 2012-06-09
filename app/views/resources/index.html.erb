@@ -19,17 +19,41 @@
 
 <% @resources.each do |resource| %>
   <tr>
-    <td><%= link_to(resource.title, resource) %></td>
-    <td><%= resource.description %></td>
-    <td><%= resource.extracted_content %></td>
     <td>
-      <% unless resource.search_topic_tags.empty? %>
-        <% resource.search_topic_tags.each do |topic| %>
-          <span><%= topic %></span>&nbsp;
-        <% end %>
+      <% if resource.highlight.nil? || resource.highlight.title.nil? %>
+        <%= link_to(resource.title, resource) %>
+      <% else %>
+        <%= link_to(resource.highlight.title.first.html_safe, resource) %>
       <% end %>
     </td>
-    <td><%= resource.author %></td>
+    <td>
+      <% if resource.highlight.nil? || resource.highlight.description.nil? %>
+        <%= resource.description %>
+      <% else %>
+        <%= resource.highlight.description.first.html_safe %>
+      <% end %>
+    </td>
+    <td>
+      <% if resource.highlight.nil? || resource.highlight.extracted_content.nil? %>
+        <%= resource.extracted_content %>
+      <% else %>
+        <%= resource.highlight.extracted_content.first.html_safe %>
+      <% end %>
+    </td>
+    <td>
+      <% if resource.highlight.nil? || resource.highlight.topic_tags.nil? %>
+        <%= resource.topic_tags %>
+      <% else %>
+        <%= resource.highlight.topic_tags.first.html_safe %>
+      <% end %>
+    </td>
+    <td>
+      <% if resource.highlight.nil? || resource.highlight.author.nil? %>
+        <%= resource.author %>
+      <% else %>
+        <%= resource.highlight.author.first.html_safe %>
+      <% end %>
+    </td>
     <td><%= resource.attachment_count %></td>
   </tr>
 <% end %>

@@ -362,15 +362,6 @@ describe Resource do
 
     it "should return an array of resources" do
       search = Resource.search(params)
-=begin
-      search = Tire.search('test_resources') do
-        query do
-          #string "cook" 
-          string @keyword
-        end
-      end
-=end
-      #puts "\n\n===count: #{search.results.count} resources: #{search}\n"
       puts "=====search: #{search.to_json}"
       search.results.should_not be_empty
     end
@@ -379,14 +370,6 @@ describe Resource do
       it "should increase the number of queries by 1" do
         lambda do
           search = Resource.search(params)
-=begin
-          search = Tire.search('test_resources') do
-            query do
-              #string "cook" 
-              string @keyword
-            end
-          end
-=end
           puts "search: #{search.to_json}"
         end.should change(UserQuery, :count).from(0).to(1)
       end
@@ -394,15 +377,17 @@ describe Resource do
       it "should not increase the number of queries if query is empty string" do
         lambda do
           search = Resource.search({:query => ""})
-=begin
-          search = Tire.search('test_resources') do
-            query do
-              #string "cook" 
-              #string ""
-            end
-          end
-=end
         end.should_not change(UserQuery, :count)
+      end
+    end
+
+    describe "description" do
+      it "should return results if description match" do
+        @description = "This is a random description and I'm going to insert a crazy word that is unique to this resource"
+        FactoryGirl.create(:resource, :description => @description, :title => @keyword_title, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
+        Resource.index.refresh
+        search = Resource.search({:query => "unique"})
+        search.results.count.should == 1
       end
     end
 
@@ -412,19 +397,8 @@ describe Resource do
         FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
         FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
         Resource.index.refresh
-        #search = Resource.search({:query => params})
         search = Resource.search(params)
-=begin
-        search = Tire.search('test_resources') do
-          query do
-            #string "cook" 
-            string @keyword
-          end
-        end
-=end
         search.results.first.title.should == @keyword_title
-        #search.results.each {|result| puts "\n===result id: #{result.id} title: #{result.title}"}
-        #puts "\n\n===first result: #{search.results.first.t}\n"
       end
     end
 
@@ -478,15 +452,6 @@ describe Resource do
       puts "\n\n=====content: #{search.to_json}\n"
       search.results.count.should == 1
     end
-=begin
-    it "should return a result even if not an exact match" do
-      search = Resource.tire.search({:query => 'ran'})
-      puts "\n\n===count: #{search.results.count} resources: #{search}\n"
-      puts "search: #{search.to_json}"
-      #puts "===resource: #{resources.first} title: #{resources.first.title} description: #{resources.first.description}"
-      search.results.should_not be_empty
-    end
-=end
   end
 
 end

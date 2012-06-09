@@ -25,15 +25,15 @@ class Resource < ActiveRecord::Base
   before_create :extract_content
 
   mapping do
-    indexes :id, type: 'integer', :index => :not_analyzed, :include_in_all => false
-    indexes :title, type: 'string', :index => :not_analyzed, :store => true
-    indexes :description, type: 'string', :index => :not_analyzed, :store => true
+    indexes :title, type: 'string', :store => true
+    #indexes :title, type: 'string', :index => :not_analyzed, :store => true
+    indexes :description, type: 'string', :store => true
     indexes :extracted_content, type: 'string', :analyzer => 'snowball', :store => true
     indexes :author, type: 'string', :index => :not_analyzed, :store => true 
     indexes :views, type: 'integer', :index => :not_analyzed, :store => true
     #indexes :downloads, type: 'integer', :index => :not_analyzed, :store => true
-    indexes :topic_tags, :index => :not_analyzed, :store => true
-    indexes :search_topic_tags
+    #indexes :topic_tags, :index => :not_analyzed, :store => true
+    indexes :topic_tags, :store => true
     #indexes :attachment_count, type: 'integer', :index => :not_analyzed
   end
 
@@ -63,7 +63,7 @@ class Resource < ActiveRecord::Base
           #b.must{ term :search_topic_tags, params[:current_resource_topics] } if params[:current_resource_topics].present?
         end
       end
-
+      s.highlight :title, :description, :extracted_content, :author, :topic_tags, :search_topic_tags, :options => {:tag => '<span class="highlight">'}
 =begin
       s.facet "resource_topics" do
         terms :search_topic_tags
