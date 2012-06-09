@@ -3,7 +3,7 @@ class Topic < ActiveRecord::Base
   has_many :resource_topics
   has_many :resources, through: :resource_topics
   validates_presence_of :name, :allow_nil => false
-  validates_uniqueness_of :name, :allow_blank => false, :allow_nil => false
+  validates_uniqueness_of :name, :allow_blank => false, :allow_nil => false, :case_sensitive => false
 
   def self.tokens(query)
     topics = where("name like ?", "%#{query}%")

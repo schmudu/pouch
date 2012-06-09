@@ -7,13 +7,19 @@
 <br/>
 <h3>My Favorites</h3>
 <div id="favorites">
-  <% unless @favorites.empty? %>
+  <% unless @favorite_resources.empty? %>
     <table>
       <tr id="favorite_table_header_row">
         <th>Name</th>
         <th></th>
       </tr>
-      <%= render @favorites %>
+      <% @favorite_resources.each do |favorite_resource| %>
+        <tr class="favorite_table_row" id="remove_favorite_<%= favorite_resource.id %>">
+          <td><%= link_to favorite_resource.title, favorite_resource %></th>
+          <td>
+              <%= link_to "Remove", {:controller => 'favorites', :action => 'destroy', :format => :js, :id => favorite_resource.id}, :remote => true %>
+        </tr>
+      <% end %>
     </table>
   <% else %>
     <span><%= t('favorites.messages.none') %></span>

@@ -12,6 +12,12 @@ describe Topic do
     topic_two.should_not be_valid
   end
 
+  it "should not be valid with duplicate name (case insensitive)" do
+    topic_one = Topic.create(:name => "Algebra")
+    topic_two = Topic.new(:name => "algebra")
+    topic_two.should_not be_valid
+  end
+
   it "should not be valid with name set to nil" do
     topic = Topic.new(:name => nil)
     topic.should_not be_valid
