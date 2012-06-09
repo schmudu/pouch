@@ -26,15 +26,11 @@ class Resource < ActiveRecord::Base
 
   mapping do
     indexes :title, type: 'string', :store => true
-    #indexes :title, type: 'string', :index => :not_analyzed, :store => true
     indexes :description, type: 'string', :store => true
     indexes :extracted_content, type: 'string', :analyzer => 'snowball', :store => true
     indexes :author, type: 'string', :index => :not_analyzed, :store => true 
     indexes :views, type: 'integer', :index => :not_analyzed, :store => true
-    #indexes :downloads, type: 'integer', :index => :not_analyzed, :store => true
-    #indexes :topic_tags, :index => :not_analyzed, :store => true
     indexes :topic_tags, :store => true
-    #indexes :attachment_count, type: 'integer', :index => :not_analyzed
   end
 
   #before_create :clear_nil_attachments
@@ -52,9 +48,6 @@ class Resource < ActiveRecord::Base
   def self.search(params)
     search_query = params[:query]
     UserQuery.create(:content => params[:query]) if ((!search_query.nil?) && (!search_query.empty?))
-    #logger.debug ("\n\n=====Query: #{Query.methods.sort.join("\n")}")
-    #logger.debug ("\n\n=====Query: #{Query.class}")
-
     tire.search(per_page: 15) do |s|
       s.query do |q|
         q.boolean do |b|
@@ -63,7 +56,7 @@ class Resource < ActiveRecord::Base
           #b.must{ term :search_topic_tags, params[:current_resource_topics] } if params[:current_resource_topics].present?
         end
       end
-      s.highlight :title, :description, :extracted_content, :author, :topic_tags, :search_topic_tags, :options => {:tag => '<span class="highlight">'}
+      s.highlight :title, :description, :extracted_content, :author, :topic_tags, :search_topic_tags, :options => {:tag => '<span class="resource_highlight">'}
 =begin
       s.facet "resource_topics" do
         terms :search_topic_tags
@@ -72,7 +65,6 @@ class Resource < ActiveRecord::Base
 
       logger.debug "\n\n=======curl: #{s.to_curl}\n"
     end
-
   end
 
 

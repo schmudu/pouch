@@ -2,6 +2,12 @@
   <div class="fb-like" data-href="http://www.lessonpouch.com" data-send="true" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
  FACEBOOK LIKE BUTTON - END -->
 
+<%= form_tag resources_path, method: :get do %>
+  <p>
+    <%= text_field_tag :query, params[:query] %>
+    <%= submit_tag "Search", name: nil %>
+  </p>
+<% end %>
 
 <div>Want to share your teacher resource?<br/><%= link_to(t('resources.links'), new_resource_path) %></div>
 <br/>

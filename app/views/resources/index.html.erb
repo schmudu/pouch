@@ -5,59 +5,44 @@
   </p>
 <% end %>
 
-<h1>Listing resources</h1>
-
-<table>
-  <tr>
-    <th>Title</th>
-    <th>Description</th>
-    <th>Content</th>
-    <th>Tags</th>
-    <th>Author</th>
-    <th>Attachments</th>
-  </tr>
-
 <% @resources.each do |resource| %>
-  <tr>
-    <td>
-      <% if resource.highlight.nil? || resource.highlight.title.nil? %>
-        <%= link_to(resource.title, resource) %>
-      <% else %>
-        <%= link_to(resource.highlight.title.first.html_safe, resource) %>
-      <% end %>
-    </td>
-    <td>
-      <% if resource.highlight.nil? || resource.highlight.description.nil? %>
-        <%= resource.description %>
-      <% else %>
-        <%= resource.highlight.description.first.html_safe %>
-      <% end %>
-    </td>
-    <td>
-      <% if resource.highlight.nil? || resource.highlight.extracted_content.nil? %>
-        <%= resource.extracted_content %>
-      <% else %>
-        <%= resource.highlight.extracted_content.first.html_safe %>
-      <% end %>
-    </td>
-    <td>
-      <% if resource.highlight.nil? || resource.highlight.topic_tags.nil? %>
-        <%= resource.topic_tags %>
-      <% else %>
-        <%= resource.highlight.topic_tags.first.html_safe %>
-      <% end %>
-    </td>
-    <td>
-      <% if resource.highlight.nil? || resource.highlight.author.nil? %>
-        <%= resource.author %>
-      <% else %>
-        <%= resource.highlight.author.first.html_safe %>
-      <% end %>
-    </td>
-    <td><%= resource.attachment_count %></td>
-  </tr>
+  <div>
+    <% if resource.highlight.nil? || resource.highlight.title.nil? %>
+      <%= link_to(resource.title, resource) %>
+    <% else %>
+      <%= link_to(resource.highlight.title.first.html_safe, resource) %>
+    <% end %>
+    by
+    <% if resource.highlight.nil? || resource.highlight.author.nil? %>
+      <%= resource.author %>
+    <% else %>
+      <%= resource.highlight.author.first.html_safe %>
+    <% end %>
+  </div>
+  <div class="resource_description">
+    <% if resource.highlight.nil? || resource.highlight.description.nil? %>
+      <%= resource.description %>
+    <% else %>
+      <%= resource.highlight.description.first.html_safe %>
+    <% end %>
+  </div>
+  <div>
+    <% if resource.highlight.nil? || resource.highlight.extracted_content.nil? %>
+      <%= resource.extracted_content %>
+    <% else %>
+      <%= resource.highlight.extracted_content.first.html_safe %>
+    <% end %>
+  </div>
+  <div>
+    <% if resource.highlight.nil? || resource.highlight.topic_tags.nil? %>
+      <%= resource.topic_tags %>
+    <% else %>
+      <%= resource.highlight.topic_tags.first.html_safe %>
+    <% end %>
+    <span class="resource_attachments">Attachments: <%= resource.attachment_count %></span>
+  </div>
+  <br/><br/>
 <% end %>
-</table>
 
 
 <%= will_paginate @resources %>
