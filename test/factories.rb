@@ -20,6 +20,7 @@ FactoryGirl.define do
     description         "some random description with a long description for the teachers"
     title               "worksheet of fractions"
     attachments         [FactoryGirl.create(:attachment)]
-    #need to provide user_id
+    grade_id            1
+    user_id             1
   end
 end

@@ -1,8 +1,43 @@
-#primary_menu ul{
+* {
+  margin: 0;
+}
+html, body {
+  height: 100%;
+}
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -60px; /* the bottom margin is the negative value of the footer's height */
+}
+.footer, .push {
+  height: 60px; /* .push must be the same height as .footer */
+}
+
+.footer{
+  background: #eeeeee;
+}
+
+ul#primary_menu{
+  width: 100%;
   list-style-type: none;
+  height: 20px;
+  background:#cccccc;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 #primary_menu li{
-  /*display: inline;
-  padding-top: 10px;*/
+  width: 130px;
+  text-align: center;
+  display: inline-block;
+}
+
+#footer_menu ul{
+  width: 100%;
+  list-style-type: none;
+}
+
+#footer_menu li{
+  display: inline;
 }
