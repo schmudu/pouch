@@ -56,19 +56,17 @@ describe Resource do
     end
   end
 
-  describe "grade id" do
-    it "should be valid with grade id submitted" do 
-      resource = FactoryGirl.build(:resource, :grade_id => @grade.id)
-      resource.valid?
-      resource.errors.each do |key, value|
-        puts "===errors: key: #{key} value:#{value}"
-      end
-      resource.should be_valid
+  describe "grades" do
+    it "should respond to resource_grades" do 
+      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
+      resource.should respond_to(:grades)
     end
+  end
 
-    it "should be invalid with grade id as nil" do 
-      resource = FactoryGirl.build(:resource, :grade_id => nil)
-      resource.should_not be_valid
+  describe "resource_grades" do
+    it "should respond to resource_grades" do 
+      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
+      resource.should respond_to(:resource_grades)
     end
   end
 

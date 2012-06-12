@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120610180646) do
+ActiveRecord::Schema.define(:version => 20120610183153) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -54,6 +54,16 @@ ActiveRecord::Schema.define(:version => 20120610180646) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "resource_grades", :force => true do |t|
+    t.integer  "resource_id"
+    t.integer  "grade_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "resource_grades", ["grade_id"], :name => "index_resource_grades_on_grade_id"
+  add_index "resource_grades", ["resource_id"], :name => "index_resource_grades_on_resource_id"
 
   create_table "resource_topics", :force => true do |t|
     t.integer  "resource_id"

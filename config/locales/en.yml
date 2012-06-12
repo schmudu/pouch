@@ -25,6 +25,7 @@ en:
     links: "Share Resource"
     no_change: "No update to the resource was made"
     no_topic: "Must provide at least one tag" 
+    no_grade: "Must provide at least one grade level" 
     saved: "Resource saved"
     updated: "Resource updated"
   sessions:

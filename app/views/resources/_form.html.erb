@@ -1,5 +1,4 @@
 <%= javascript_include_tag "resources/form" %>
-
 <%= nested_form_for @resource, :html=>{:multipart => true } do |f| %>
   <p>
   <%= f.label :title %><br />
@@ -10,21 +9,25 @@
   <%= f.text_area :description %>
   </p>
   <p>
+    <% @grades.each do |grade| %>
+      <%= f.label grade.title %>
+      <% if params["grade_#{grade.id}"].present? %>
+        <%= check_box_tag "grade_#{grade.id}", 1, true %>
+      <% else %>
+        <%= check_box_tag "grade_#{grade.id}" %>
+      <% end %>       
+    <% end %>
+  </p>
+  <p>
   <%= f.label :topic_tokens, "Tags" %><br />
   <%= f.text_field :topic_tokens %>
-  <span><i>Example: 7th Grade Algebra Square Root</i></span>
+  <span><i>Example: <b>Math Algebra</b> or <b>English Composition</b></i></span>
   </p>
   <%= f.fields_for :attachments do |attachment_form|  %>
     <p>
     <%= attachment_form.label :file %>
     <% if !attachment_form.object.file.path.blank? %>
-      <% #file_info = get_cache_file_info attachment_form.object.file.path %>
-      <% #puts "\n\npath:#{attachment_form.object.file.path}\n" %>
       <% file_info = get_file_info(attachment_form.object.file.path) %>
-      <% #puts "folder:#{file_info[:folder]}" %>
-      <% #puts "folder:#{attachment_form.object.file.path.blank?}" %>
-      <% #image_tag(File.join('/tmp/cache/', file_info[:folder]))%>
-      <% #attachment_form.file_field :file, :value => "#{File.join('/tmp/cache/', file_info[:folder], '/',attachment_form.object.file.identifier)}" %>
       <%= link_to attachment_form.object.file.identifier, "#{File.join('/tmp/cache/', file_info[:folder], '/',attachment_form.object.file.identifier)}" %>
     <% else %>
       <%= attachment_form.file_field :file %>

@@ -68,7 +68,7 @@ class ResourcesController < ApplicationController
   # GET /resources/new.json
   def new
     @resource = Resource.new
-
+    @grades = Grade.all
 
     respond_to do |format|
       format.html # new.html.erb
@@ -99,16 +99,27 @@ class ResourcesController < ApplicationController
       @resource.user_id = current_user.id
       @resource.valid?
 
+      logger.debug "\n===contains grades: #{params_contains_grades? params}"
+      #check for grade levels
+      @resource.errors[:grades] = t('resources.no_grade') unless params_contains_grades? params
       @resource.errors[:agreed] = t('resources.agreement') unless @resource.agreed == '1'
       @resource.errors[:topics] = t('resources.no_topic') if @resource.topics.empty?
+      
       if((params[:resource][:attachments_attributes].nil?) || (params[:resource][:attachments_attributes].empty?))
+        @grades = Grade.all
         @resource.errors[:attachments] = 'Must provide at least one attachment'
-        render 'new'
-      elsif !@resource.errors.empty?
+      end
+
+      if !@resource.errors.empty?
+        @grades = Grade.all
         render 'new'
       else 
         #@resource.extract_content
         @resource.save
+        # save resource_grades
+        create_resource_grades(@resource, params)
+
+        logger.debug "\n=====#{params['grade_1']} \n"
         redirect_to @resource, notice: 'Resource was successfully created.' 
       end
 =begin
@@ -176,8 +187,9 @@ class ResourcesController < ApplicationController
       #counter needs to have at least one attachment
       @resource.valid?
       @resource.errors[:attachments] = 'Must provide at least one attachment'
-      render 'edit'
-    elsif !@resource.errors.empty?
+    end
+
+    if !@resource.errors.empty?
       render 'edit'
     elsif @resource.update_attributes(params[:resource])
       #update extracted content
@@ -207,8 +219,23 @@ class ResourcesController < ApplicationController
 
   private
 
+  def create_resource_grades(resource, params)
+    Grade.all.each do |grade|
+      if params.include?("grade_#{grade.id}")
+        ResourceGrade.create(:resource_id => resource.id, :grade_id => grade.id)
+      end
+    end
+  end
+
   def is_resource_owner?
     @resource = Resource.find(params[:id])
     redirect_to :controller=>'pages', :action => 'unauthorized' if(@resource.user_id != current_user.id)
+  end
+
+  def params_contains_grades? params
+    Grade.all.each do |grade|
+      return true if params.include?("grade_#{grade.id}")
+    end
+    return false
   end
 end

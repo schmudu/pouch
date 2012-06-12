@@ -12,12 +12,13 @@ class Resource < ActiveRecord::Base
   attr_accessible :description, :title, :attachments_attributes, :user_id, :views, :agreed, :topic_tokens
 
   belongs_to :user
-  belongs_to :grade
   has_many :attachments, :as => :attachable, :dependent => :destroy
   has_many :user_resource_views, :dependent => :destroy
   has_many :favorites, :dependent => :destroy
   has_many :resource_topics
   has_many :topics, through: :resource_topics
+  has_many :resource_grades
+  has_many :grades, through: :resource_grades
 
   accepts_nested_attributes_for :attachments, :allow_destroy => true
   attr_reader :topic_tokens
@@ -36,7 +37,6 @@ class Resource < ActiveRecord::Base
 
   #before_create :clear_nil_attachments
   validates_presence_of :user_id
-  validates_presence_of :grade_id
   validates_presence_of :description, :message => "Resource must have a description"
   validates             :description, :length => {:minimum => RESOURCE_DESCRIPTION_MIN_LENGTH}
   validates_presence_of :title, :message => "Resource must have a title"

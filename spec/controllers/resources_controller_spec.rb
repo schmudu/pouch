@@ -187,6 +187,7 @@ describe ResourcesController do
 
   describe "POST create" do
     before(:each) do
+      @grade = Grade.first
       login_user
     end
 
@@ -214,7 +215,7 @@ describe ResourcesController do
       end
 
       it "should redirect to sign in page" do
-        post :create, {:resource => valid_attributes(:one => uploaded_file)}, valid_session
+        post :create, {:resource => valid_attributes(:one => uploaded_file), "grade_#{@grade.id}" => 1}, valid_session
         response.should redirect_to(new_user_session_path)
       end
     end
@@ -222,21 +223,27 @@ describe ResourcesController do
     describe "with valid params" do
       it "creates a new Resource with one attachment" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => uploaded_file})}
+          post :create, {:resource => valid_attributes({:one => uploaded_file}), "grade_#{@grade.id}" => 1}
           resource = Resource.last
           response.should redirect_to(resource_path(:id => resource.id))
         end.should change(Resource, :count).by(1)
       end
 
+      it "creates a new Resource with one attachment" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => uploaded_file}), "grade_#{@grade.id}" => 1}
+        end.should change(ResourceGrade, :count).by(1)
+      end
+
       it "should create a new topic" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => uploaded_file})}
+          post :create, {:resource => valid_attributes({:one => uploaded_file}), "grade_#{@grade.id}" => 1}
         end.should change(Topic, :count).by(1)
       end
 
       it "creates a new Resource with three attachments" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => uploaded_file, :two => uploaded_file, :three => uploaded_file})}
+          post :create, {:resource => valid_attributes({:one => uploaded_file, :two => uploaded_file, :three => uploaded_file}), "grade_#{@grade.id}" => 1}
         end.should change(Resource, :count).by(1)
         resource = Resource.last
         resource.attachments.count.should == 3
@@ -244,7 +251,7 @@ describe ResourcesController do
 
       it "creates a new Resource with two attachment, one removed, and one empty" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => empty_file, :two => removed_file, :three => uploaded_file, :four => uploaded_file})}
+          post :create, {:resource => valid_attributes({:one => empty_file, :two => removed_file, :three => uploaded_file, :four => uploaded_file}), "grade_#{@grade.id}" => 1}
         end.should change(Resource, :count).by(1)
         resource = Resource.last
         resource.attachments.count.should == 2
@@ -254,28 +261,35 @@ describe ResourcesController do
     describe "with invalid params" do
       it "with an empty token" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => uploaded_file}).merge({:topic_tokens => ""})}
+          post :create, {:resource => valid_attributes({:one => uploaded_file}).merge({:topic_tokens => ""}), "grade_#{@grade.id}" => 1}
           response.should render_template('new')
         end.should_not change(Resource, :count)
       end
 
+      it "should re-render new page if no grade level is set" do
+        lambda do
+          post :create, {:resource => valid_attributes({:one => uploaded_file})}
+          response.should render_template('new')
+        end.should_not change(Resource, :count)
+      end
+      
       it "should re-render new page if agreed is not set" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => uploaded_file}).merge({:agreed => 0})}
+          post :create, {:resource => valid_attributes({:one => uploaded_file}).merge({:agreed => 0}), "grade_#{@grade.id}" => 1}
           response.should render_template('new')
         end.should_not change(Resource, :count)
       end
       
       it "should re-render new page with empty attributes file" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => empty_file})}
+          post :create, {:resource => valid_attributes({:one => empty_file}), "grade_#{@grade.id}" => 1}
           response.should render_template('new')
         end.should_not change(Resource, :count)
       end
 
       it "should re-render template new with removed attributes file" do
         lambda do
-          post :create, {:resource => valid_attributes({:one => removed_file})}
+          post :create, {:resource => valid_attributes({:one => removed_file}), "grade_#{@grade.id}" => 1}
           response.should render_template('new')
         end.should_not change(Resource, :count)
       end
@@ -284,6 +298,7 @@ describe ResourcesController do
 
   describe "PUT update" do
     before(:each) do
+      @grade = Grade.first
       login_user
 
       #attach two documents
@@ -322,49 +337,49 @@ describe ResourcesController do
 
     it "should not allow anyone to update resources if not signed in" do
       sign_out @user
-      post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)})}
+      post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}), "grade_#{@grade.id}" => 1}
       response.should redirect_to(new_user_session_path)
     end 
 
     describe "with valid params" do
       it "updates resource with no changes" do
         lambda do
-          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)})}
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}), "grade_#{@grade.id}" => 1}
           response.should redirect_to(resource_path(:id => @resource.id))
         end.should_not change(@resource.attachments, :count)
       end
 
       it "updates resource with two empty files" do
         lambda do
-          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_empty_added, :four => file_empty_added})}
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_empty_added, :four => file_empty_added}), "grade_#{@grade.id}" => 1}
           response.should redirect_to(resource_path(:id => @resource.id))
         end.should_not change(@resource.attachments, :count)
       end
 
       it "updates resource with and removes one file" do
         lambda do
-          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)})}
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)}), "grade_#{@grade.id}" => 1}
           response.should redirect_to(resource_path(:id => @resource.id))
         end.should change(@resource.attachments, :count).from(2).to(1)
       end
 
       it "updates resource with uploaded file but then removes it" do
         lambda do
-          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_uploaded_removed})}
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_uploaded_removed}), "grade_#{@grade.id}" => 1}
           response.should redirect_to(resource_path(:id => @resource.id))
         end.should_not change(@resource.attachments, :count)
       end
 
       it "updates resource with an empty file added/removed" do
         lambda do
-          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_empty_added_removed})}
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_empty_added_removed}), "grade_#{@grade.id}" => 1}
           response.should redirect_to(resource_path(:id => @resource.id))
         end.should_not change(@resource.attachments, :count)
       end
 
       it "updates resource with two additional files" do
         lambda do
-          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_uploaded, :four =>file_uploaded})}
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id), :three => file_uploaded, :four =>file_uploaded}), "grade_#{@grade.id}" => 1}
           response.should redirect_to(resource_path(:id => @resource.id))
         end.should change(@resource.attachments, :count).from(2).to(4)
       end
@@ -384,8 +399,8 @@ describe ResourcesController do
         resource.extracted_content.should_not match /docx/
 
         #update resource
-        #post :update, {:id=>@resource.id, :resource => valid_attributes({:one => :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.doc')), 'doc'), :_destroy=>"false"})}
-        post :update, {:id=>resource.id, :resource => valid_attributes({:one => {:file => Rack::Test::UploadedFile.new(File.join(Rails.root, '/test/downloads/sample_one.doc'), 'doc'), :_destroy=>"false"}, :two => file_previously_uploaded_removed(attachment_one.id), :three => {:file => Rack::Test::UploadedFile.new(File.join(Rails.root, '/test/downloads/sample_one.docx'), 'docx'), :_destroy=>"false"}, :four => file_previously_uploaded_removed(attachment_two.id)})}
+        #post :update, {:id=>@resource.id, :resource => valid_attributes({:one => :file => Rack::Test::UploadedFile.new((File.join(Rails.root, '/test/downloads/sample_one.doc')), 'doc'), :_destroy=>"false"}), "grade_#{@grade.id}" => 1}
+        post :update, {:id=>resource.id, :resource => valid_attributes({:one => {:file => Rack::Test::UploadedFile.new(File.join(Rails.root, '/test/downloads/sample_one.doc'), 'doc'), :_destroy=>"false"}, :two => file_previously_uploaded_removed(attachment_one.id), :three => {:file => Rack::Test::UploadedFile.new(File.join(Rails.root, '/test/downloads/sample_one.docx'), 'docx'), :_destroy=>"false"}, :four => file_previously_uploaded_removed(attachment_two.id)}), "grade_#{@grade.id}" => 1}
 
         #get updated model
         resource = Resource.find_by_id(resource.id)
@@ -399,19 +414,19 @@ describe ResourcesController do
 
     describe "with invalid params" do
       it "updates with no topics" do
-        post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}).merge(:topic_tokens => "")}
+        post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}).merge(:topic_tokens => ""), "grade_#{@grade.id}" => 1}
         response.should render_template('edit')
       end
 
       it "attempts to update resource by removing all attachments" do
-          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_removed(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)})}
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_removed(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)}), "grade_#{@grade.id}" => 1}
           response.should render_template('edit')
       end
 
       it "another user tries to edit a resource they do not own" do
         sign_out @user
         sign_in @another_user
-        post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_removed(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)})}
+        post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_removed(@attachment_one.id), :two => file_previously_uploaded_removed(@attachment_two.id)}), "grade_#{@grade.id}" => 1}
         response.should redirect_to(unauthorized_path)
       end
     end
