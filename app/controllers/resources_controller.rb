@@ -177,6 +177,12 @@ class ResourcesController < ApplicationController
       end
     end
 
+   
+
+    #check if at least one grade is submitted
+    @potential_grades = params.select{|key, value| key =~ /grade_/}
+    @resource.errors[:grades] = t('resources.no_grade') if @potential_grades.empty?
+
     #check if title/description have changed
     resource_changed = true if((params[:resource][:title] != @resource.title) || (params[:resource][:description] != @resource.description))
 
@@ -197,11 +203,59 @@ class ResourcesController < ApplicationController
         @resource.extract_content
         @resource.save
       end
+
+      #remove grade levels not checked
+      @resource.resource_grades.each do |rg|
+        if !params.include?("grade_#{rg.id}")
+          rg.destroy
+        end
+      end
+
+      #add grade levels checked
+      logger.debug("\n==before: potential_grades(params)")
+      @potential_grades.each do |key, value|
+        logger.debug "======potential grade: #{key}\n"
+      end
+      logger.debug("\n==before: resource_grades")
+      @resource.resource_grades.each do |rg|
+        logger.debug "======grade: #{rg.grade_id}\n"
+      end
+      #@add_grades = @potential_grades.select{|key, value| @resource.resource_grades.each{|rg| rg.grade_id.to_s.chomp.eql?(key[(key.to_s =~ /\d/),key.to_s.length]).chomp}}
+      @add_grades = @potential_grades.reject{|key, value| match_params(key, @resource)}
+=begin
+      @add_grades = @potential_grades.select do |key, value| 
+        @resource.resource_grades.find_all do |rg|
+          logger.debug "===testing: #{rg.grade_id.to_s.chomp} against key: #{(key[(key.to_s =~ /\d/),key.to_s.length]).chomp}"
+          logger.debug "===final test: #{rg.grade_id.to_s.chomp.eql? (key[(key.to_s =~ /\d/),key.to_s.length]).to_s.chomp}"
+          rg.grade_id.to_s.chomp.eql? (key[(key.to_s =~ /\d/),key.to_s.length]).chomp
+        end
+      end
+=end
+      #output this
+      logger.debug("==after")
+      @add_grades.each do |key, value|
+        #ResourceGrade.create(:resource_id => @resource_id, :grade_id => )
+        logger.debug "======grade: #{key}\n"
+      end
+
       #resource_changed ? notice = t('resources.updated') : notice = t('resources.no_change')
       notice = t('resources.saved')
       redirect_to @resource, notice: notice
     else
       render 'edit'
+    end
+  end
+
+  def match_params(key, resource)
+    #return true false whether or not the resource has the key as a grade_id
+    resource.resource_grades.find_all do |rg|
+      if rg.grade_id.to_s.chomp.eql? (key[(key.to_s =~ /\d/),key.to_s.length]).to_s.chomp     
+        logger.debug "match\n"
+        return true;
+      else
+        logger.debug "no match\n"
+        return false;
+      end
     end
   end
 

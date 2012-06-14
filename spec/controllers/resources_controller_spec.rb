@@ -299,12 +299,15 @@ describe ResourcesController do
   describe "PUT update" do
     before(:each) do
       @grade = Grade.first
+      @last_grade = Grade.last
       login_user
 
       #attach two documents
       @attachment_one = FactoryGirl.create(:attachment)
       @attachment_two = FactoryGirl.create(:attachment)
       @resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
+      @resource_grade = ResourceGrade.create(:resource_id => @resource.id, :grade_id => @grade.id)
+      @resource_grade = ResourceGrade.create(:resource_id => @resource.id, :grade_id => @last_grade.id)
     end
 
     def valid_attributes params
@@ -347,6 +350,22 @@ describe ResourcesController do
           post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}), "grade_#{@grade.id}" => 1}
           response.should redirect_to(resource_path(:id => @resource.id))
         end.should_not change(@resource.attachments, :count)
+      end
+
+      it "updates resource by adding one grade" do
+        @duplicate_resource = FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
+        @duplicate_resource_grade = ResourceGrade.create(:resource_id => @duplicate_resource.id, :grade_id => @grade.id)
+        @another_grade = Grade.last
+        lambda do
+          post :update, {:id=>@duplicate_resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}), "grade_#{@another_grade.id}" => 1, "grade_#{@grade.id}" => 1}
+        end.should change(@duplicate_resource.resource_grades, :count).from(1).to(2)
+      end
+
+      it "updates resource by removing one grade" do
+        @another_grade = Grade.last
+        lambda do
+          post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}), "grade_#{@another_grade.id}" => 1}
+        end.should change(@resource.resource_grades, :count).from(2).to(1)
       end
 
       it "updates resource with two empty files" do
@@ -413,6 +432,11 @@ describe ResourcesController do
     end
 
     describe "with invalid params" do
+      it "updates with no grades" do
+        post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)})}
+        response.should render_template('edit')
+      end
+
       it "updates with no topics" do
         post :update, {:id=>@resource.id, :resource => valid_attributes({:one => file_previously_uploaded_untouched(@attachment_one.id), :two => file_previously_uploaded_untouched(@attachment_two.id)}).merge(:topic_tokens => ""), "grade_#{@grade.id}" => 1}
         response.should render_template('edit')
