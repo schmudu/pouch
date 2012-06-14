@@ -203,10 +203,11 @@ class ResourcesController < ApplicationController
         @resource.extract_content
         @resource.save
       end
-
+      logger.debug("==start resource_grades_count: #{@resource.resource_grades.count}\n")
       #remove grade levels not checked
       @resource.resource_grades.each do |rg|
-        if !params.include?("grade_#{rg.id}")
+        if !params.include?("grade_#{rg.grade_id}")
+          logger.debug("==destroying: #{rg.id}")
           rg.destroy
         end
       end
@@ -234,8 +235,8 @@ class ResourcesController < ApplicationController
       #output this
       logger.debug("==after")
       @add_grades.each do |key, value|
-        #ResourceGrade.create(:resource_id => @resource_id, :grade_id => )
-        logger.debug "======grade: #{key}\n"
+        created_grade = ResourceGrade.create(:resource_id => @resource.id, :grade_id => key[(key.to_s =~ /\d/),key.to_s.length])
+        logger.debug "======adding grade: #{key[(key.to_s =~ /\d/),key.to_s.length]} success: #{created_grade.errors.first}\n"
       end
 
       #resource_changed ? notice = t('resources.updated') : notice = t('resources.no_change')
