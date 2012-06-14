@@ -7,6 +7,17 @@
   <%= f.label :description %><br />
   <%= f.text_area :description %>
   </p>
+   <p>
+    <% @grades.each do |grade| %>
+      <%= f.label grade.title %>
+      <% if @resource.resource_grades.find_by_grade_id(grade.id).nil? %>
+        <%= check_box_tag "grade_#{grade.id}", 1, false %>
+      <% else %>
+        <%= check_box_tag "grade_#{grade.id}", 1, true %>
+      <% end %>       
+    <% end %>
+  </p>
+  <p>
   <p>
   <%= f.label :topic_tokens, "Tokens" %><br />
   <%= f.text_field :topic_tokens, data: {load: @resource.topics} %>

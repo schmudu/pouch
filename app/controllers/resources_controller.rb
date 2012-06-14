@@ -79,6 +79,7 @@ class ResourcesController < ApplicationController
   # GET /resources/1/edit
   def edit
     @resource = Resource.find(params[:id])
+    @grades = Grade.all
   end
 
   # POST /resources
@@ -196,6 +197,7 @@ class ResourcesController < ApplicationController
     end
 
     if !@resource.errors.empty?
+      @grades = Grade.all
       render 'edit'
     elsif @resource.update_attributes(params[:resource])
       #update extracted content
@@ -243,6 +245,7 @@ class ResourcesController < ApplicationController
       notice = t('resources.saved')
       redirect_to @resource, notice: notice
     else
+      @grades = Grade.all
       render 'edit'
     end
   end
