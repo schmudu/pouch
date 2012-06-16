@@ -13,4 +13,8 @@ class String
     return false if (self =~ /\d/).nil?
     return true
   end
+
+  def extract_grade_id 
+    self[(self.to_s =~ /\d/),self.to_s.length]
+  end
 end

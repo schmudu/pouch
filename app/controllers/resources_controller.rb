@@ -237,8 +237,8 @@ class ResourcesController < ApplicationController
       #output this
       logger.debug("==after")
       @add_grades.each do |key, value|
-        created_grade = ResourceGrade.create(:resource_id => @resource.id, :grade_id => key[(key.to_s =~ /\d/),key.to_s.length])
-        logger.debug "======adding grade: #{key[(key.to_s =~ /\d/),key.to_s.length]} success: #{created_grade.errors.first}\n"
+        created_grade = ResourceGrade.create(:resource_id => @resource.id, :grade_id => key.extract_grade_id)
+        logger.debug "======adding grade: #{key.extract_grade_id} success: #{created_grade.errors.first}\n"
       end
 
       #resource_changed ? notice = t('resources.updated') : notice = t('resources.no_change')
@@ -253,7 +253,8 @@ class ResourcesController < ApplicationController
   def match_params(key, resource)
     #return true false whether or not the resource has the key as a grade_id
     resource.resource_grades.find_all do |rg|
-      if rg.grade_id.to_s.chomp.eql? (key[(key.to_s =~ /\d/),key.to_s.length]).to_s.chomp     
+      #if rg.grade_id.to_s.chomp.eql? (key[(key.to_s =~ /\d/),key.to_s.length]).to_s.chomp     
+      if rg.grade_id.to_s.chomp.eql? key.extract_grade_id    
         logger.debug "match\n"
         return true;
       else
