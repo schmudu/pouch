@@ -9,7 +9,7 @@ class Resource < ActiveRecord::Base
 
   #Note: Because we are using nested form, we can not add any validators to the attachments attribute
   attr_accessor :agreed
-  attr_accessible :description, :title, :attachments_attributes, :user_id, :views, :agreed, :topic_tokens
+  attr_accessible :title, :attachments_attributes, :user_id, :views, :agreed, :topic_tokens
 
   belongs_to :user
   has_many :attachments, :as => :attachable, :dependent => :destroy
@@ -28,7 +28,6 @@ class Resource < ActiveRecord::Base
 
   mapping do
     indexes :title, type: 'string', :store => true
-    indexes :description, type: 'string', :store => true
     indexes :extracted_content, type: 'string', :analyzer => 'snowball', :store => true
     indexes :author, type: 'string', :index => :not_analyzed, :store => true 
     indexes :views, type: 'integer', :index => :not_analyzed, :store => true
@@ -37,8 +36,6 @@ class Resource < ActiveRecord::Base
 
   #before_create :clear_nil_attachments
   validates_presence_of :user_id
-  validates_presence_of :description, :message => "Resource must have a description"
-  validates             :description, :length => {:minimum => RESOURCE_DESCRIPTION_MIN_LENGTH}
   validates_presence_of :title, :message => "Resource must have a title"
   validates             :title, :length => {:minimum => RESOURCE_TITLE_MIN_LENGTH}
   #validates_with ResourceValidator
@@ -58,7 +55,7 @@ class Resource < ActiveRecord::Base
           #b.must{ term :search_topic_tags, params[:current_resource_topics] } if params[:current_resource_topics].present?
         end
       end
-      s.highlight :title, :description, :extracted_content, :author, :topic_tags, :search_topic_tags, :options => {:tag => '<span class="resource_highlight">'}
+      s.highlight :title, :extracted_content, :author, :topic_tags, :search_topic_tags, :options => {:tag => '<span class="resource_highlight">'}
 =begin
       s.facet "resource_topics" do
         terms :search_topic_tags

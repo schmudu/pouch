@@ -184,9 +184,6 @@ class ResourcesController < ApplicationController
     @potential_grades = params.select{|key, value| key =~ /grade_/}
     @resource.errors[:grades] = t('resources.no_grade') if @potential_grades.empty?
 
-    #check if title/description have changed
-    resource_changed = true if((params[:resource][:title] != @resource.title) || (params[:resource][:description] != @resource.description))
-
     #check for topic tags
     @resource.errors[:topics] = t('resources.no_topic') if params[:resource][:topic_tokens].empty?
     

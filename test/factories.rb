@@ -17,7 +17,6 @@ FactoryGirl.define do
   end
 
   factory :resource do
-    description         "some random description with a long description for the teachers"
     title               "worksheet of fractions"
     attachments         [FactoryGirl.create(:attachment)]
     user_id             1

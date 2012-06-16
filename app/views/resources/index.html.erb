@@ -19,13 +19,6 @@
       <%= resource.highlight.author.first.html_safe %>
     <% end %>
   </div>
-  <div class="resource_description">
-    <% if resource.highlight.nil? || resource.highlight.description.nil? %>
-      <%= resource.description %>
-    <% else %>
-      <%= resource.highlight.description.first.html_safe %>
-    <% end %>
-  </div>
   <div>
     <% if resource.highlight.nil? || resource.highlight.extracted_content.nil? %>
       <%= resource.extracted_content %>

@@ -192,7 +192,7 @@ describe ResourcesController do
     end
 
     def valid_attributes params
-      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :topic_tokens => "<<<New Topic>>>", :agreed => "1", :attachments_attributes => params}
+      {:title => "My worksheet", :topic_tokens => "<<<New Topic>>>", :agreed => "1", :attachments_attributes => params}
         #{:one => attributes_uploaded_file}
       #}
     end
@@ -311,7 +311,7 @@ describe ResourcesController do
     end
 
     def valid_attributes params
-      {:title => "My worksheet", :description => "My first worksheet for 1st grade", :topic_tokens => "<<<New Topic>>>", :attachments_attributes => params}
+      {:title => "My worksheet", :topic_tokens => "<<<New Topic>>>", :attachments_attributes => params}
     end
 
     def file_previously_uploaded_untouched attachment_id

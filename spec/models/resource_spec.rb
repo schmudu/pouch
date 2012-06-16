@@ -9,7 +9,7 @@ describe Resource do
   end
 
   describe "title" do
-    it "should be invalid with no description" do 
+    it "should be invalid with no title" do 
       resource = FactoryGirl.build(:resource, :user_id => @user.id, :title => nil)
       resource.should_not be_valid
     end
@@ -25,47 +25,30 @@ describe Resource do
     end
   end
 
-  describe "description" do
-    it "should be invalid with no description" do 
-      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
-      resource.should_not be_valid
-    end
-
-    it "should be invalid with a description with less than the minumum" do 
-      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => 'a' * (ConstantsHelper::RESOURCE_DESCRIPTION_MIN_LENGTH-1))
-      resource.should_not be_valid
-    end
-
-    it "should be valid with a description with the minumum" do 
-      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => 'a' * ConstantsHelper::RESOURCE_DESCRIPTION_MIN_LENGTH)
-      resource.should be_valid
-    end
-  end
-
   describe "topics" do
     it "should respond to resource_topics" do 
-      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
+      resource = FactoryGirl.build(:resource, :user_id => @user.id)
       resource.should respond_to(:topics)
     end
   end
 
   describe "resource_topics" do
     it "should respond to resource_topics" do 
-      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
+      resource = FactoryGirl.build(:resource, :user_id => @user.id)
       resource.should respond_to(:resource_topics)
     end
   end
 
   describe "grades" do
     it "should respond to resource_grades" do 
-      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
+      resource = FactoryGirl.build(:resource, :user_id => @user.id)
       resource.should respond_to(:grades)
     end
   end
 
   describe "resource_grades" do
     it "should respond to resource_grades" do 
-      resource = FactoryGirl.build(:resource, :user_id => @user.id, :description => nil)
+      resource = FactoryGirl.build(:resource, :user_id => @user.id)
       resource.should respond_to(:resource_grades)
     end
   end
@@ -373,7 +356,7 @@ describe Resource do
     end
 
     def params
-      {:query => "random"}
+      {:query => "worksheet"}
     end
 
     it "should return an array of resources" do
@@ -397,18 +380,10 @@ describe Resource do
       end
     end
 
-    describe "description" do
-      it "should return results if description match" do
-        @description = "This is a random description and I'm going to insert a crazy word that is unique to this resource"
-        FactoryGirl.create(:resource, :description => @description, :title => @keyword_title, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
-        Resource.index.refresh
-        search = Resource.search({:query => "unique"})
-        search.results.count.should == 1
-      end
-    end
-
     describe "title" do
-      it "should place resource that has special word in description and title first" do
+      pending "should we test ranking of results?"
+=begin
+      it "should place resource that has special word in title first" do
         FactoryGirl.create(:resource, :title => @keyword_title, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
         FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
         FactoryGirl.create(:resource, :user_id => @user.id, :attachments => [@attachment_one, @attachment_two])
@@ -416,6 +391,7 @@ describe Resource do
         search = Resource.search(params)
         search.results.first.title.should == @keyword_title
       end
+=end
     end
 
     describe "author" do
