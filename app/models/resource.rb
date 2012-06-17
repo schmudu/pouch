@@ -68,7 +68,7 @@ class Resource < ActiveRecord::Base
 
 
   def to_indexed_json
-    to_json(methods: [:author, :attachment_count, :topic_tags, :search_topic_tags])
+    to_json(methods: [:author, :attachment_count, :topic_tags, :search_topic_tags, :grade_titles])
   end
 
   def author
@@ -79,10 +79,19 @@ class Resource < ActiveRecord::Base
     attachments.count
   end
 
+  def grade_titles
+    @grade_titles = []
+    self.grades.each{|grade| @grade_titles << grade.title.to_s}
+    @grade_titles
+  end
+
   def topic_tags
     @topics = []
     self.topics.each{|topic| @topics << topic.name.to_s}
-    @topics.join(" ")
+    @topics_edited = @topics.map do |e| 
+      "<span class='resource_tag topic_tag'>#{e}</span>"
+    end
+    @topics_edited.join(" ")
   end
 
   def search_topic_tags

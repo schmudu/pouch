@@ -27,8 +27,13 @@
     <% end %>
   </div>
   <div>
+    <% unless resource.grade_titles.empty? %>
+      <% resource.grade_titles.each do |title| %>
+        <span class="resource_tag grade_tag"><%= title %></span>
+      <% end %>
+    <% end %>
     <% if resource.highlight.nil? || resource.highlight.topic_tags.nil? %>
-      <%= resource.topic_tags %>
+      <%= resource.topic_tags.html_safe %>
     <% else %>
       <%= resource.highlight.topic_tags.first.html_safe %>
     <% end %>
