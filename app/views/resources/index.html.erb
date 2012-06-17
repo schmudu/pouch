@@ -5,42 +5,46 @@
   </p>
 <% end %>
 
-<% @resources.each do |resource| %>
-  <div>
-    <% if resource.highlight.nil? || resource.highlight.title.nil? %>
-      <%= link_to(resource.title, resource) %>
-    <% else %>
-      <%= link_to(resource.highlight.title.first.html_safe, resource) %>
-    <% end %>
-    by
-    <% if resource.highlight.nil? || resource.highlight.author.nil? %>
-      <%= resource.author %>
-    <% else %>
-      <%= resource.highlight.author.first.html_safe %>
-    <% end %>
-  </div>
-  <div>
-    <% if resource.highlight.nil? || resource.highlight.extracted_content.nil? %>
-      <%= resource.extracted_content %>
-    <% else %>
-      <%= resource.highlight.extracted_content.first.html_safe %>
-    <% end %>
-  </div>
-  <div>
-    <% unless resource.grade_titles.empty? %>
-      <% resource.grade_titles.each do |title| %>
-        <span class="resource_tag grade_tag"><%= title %></span>
+<% if @resources.empty? %>
+  <%= t('resources.no_results') %>
+<% else %>
+  <%= pluralize(@resources.count, 'result') %>.<br/><br/>
+  <% @resources.each do |resource| %>
+    <div>
+      <% if resource.highlight.nil? || resource.highlight.title.nil? %>
+        <%= link_to(resource.title, resource) %>
+      <% else %>
+        <%= link_to(resource.highlight.title.first.html_safe, resource) %>
       <% end %>
-    <% end %>
-    <% if resource.highlight.nil? || resource.highlight.topic_tags.nil? %>
-      <%= resource.topic_tags.html_safe %>
-    <% else %>
-      <%= resource.highlight.topic_tags.first.html_safe %>
-    <% end %>
-    <span class="resource_attachments">Attachments: <%= resource.attachment_count %></span>
-  </div>
-  <br/><br/>
+      by
+      <% if resource.highlight.nil? || resource.highlight.author.nil? %>
+        <%= resource.author %>
+      <% else %>
+        <%= resource.highlight.author.first.html_safe %>
+      <% end %>
+    </div>
+    <div>
+      <% if resource.highlight.nil? || resource.highlight.extracted_content.nil? %>
+        <%= resource.extracted_content %>
+      <% else %>
+        <%= resource.highlight.extracted_content.first.html_safe %>
+      <% end %>
+    </div>
+    <div>
+      <% unless resource.grade_titles.empty? %>
+        <% resource.grade_titles.each do |title| %>
+          <span class="resource_tag grade_tag"><%= title %></span>
+        <% end %>
+      <% end %>
+      <% if resource.highlight.nil? || resource.highlight.topic_tags.nil? %>
+        <%= resource.topic_tags.html_safe %>
+      <% else %>
+        <%= resource.highlight.topic_tags.first.html_safe %>
+      <% end %>
+      <span class="resource_attachments">Attachments: <%= resource.attachment_count %></span>
+    </div>
+    <br/><br/>
+  <% end %>
 <% end %>
-
 
 <%= will_paginate @resources %>
