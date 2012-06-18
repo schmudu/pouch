@@ -41,3 +41,26 @@ ul#primary_menu{
 #footer_menu li{
   display: inline;
 }
+
+
+#left {
+    float:left;
+    width:150px;
+    margin:0; padding:0;
+    }
+  #right {
+    float:right;
+    width:150px;
+    margin:0; padding:0;
+    background:red;
+    }
+  #middle {
+    /*margin:0 150px;*/
+    margin-left:150px;
+    margin-right:150px;
+    background:yellow;
+    }
+  .column-in {
+    margin:0; 
+    /*padding:0.5em 1em;*/
+    }

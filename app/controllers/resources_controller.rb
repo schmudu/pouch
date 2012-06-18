@@ -29,9 +29,21 @@ class ResourcesController < ApplicationController
   # GET /resources
   # GET /resources.json
   def index
-    logger.debug("\n\n====index: params: #{params}\n")
 
     @resources = Resource.search(params)
+    #filter results by grade
+    grade_params = params.select{|key,value| key =~ /grade_/ }
+
+    @filtered_resources = @resources
+    #logger.debug("====before loop: #{@filtered_resources.count}\n")
+    grade_params.each do |key, value|
+      @filtered_resources = @filtered_resources.select do |r|   
+        logger.debug("====loop results: id: #{key.extract_grade_id} results: #{r.has_grade_id? key.extract_grade_id}\n")
+        r.has_grade_id? key.extract_grade_id
+      end
+    end
+    #logger.debug("====after loop: #{@filtered_resources.count}\n")
+    @grades = Grade.all
 
     respond_to do |format|
       format.html # index.html.erb
